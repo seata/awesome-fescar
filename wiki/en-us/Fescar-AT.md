@@ -2,7 +2,7 @@
 [//]: #
 (title: Fescar AT mode)
 [//]: #
-(author: slievrly)
+(author: slievrly, mingisme)
 [//]: #
 (keywords: Fescar AT mode)
 [//]: #
