@@ -12,7 +12,7 @@ Fescar 是一款开源的分布式事务解决方案，提供高性能和简单�
 - 支持 Mybatis、JPA
 - 支持 Nacos 服务注册和配置中心
 - 增加 server 重启时从文件自动恢复未完成事务操作至内存
-- 支持 多ip环境下，启动server时指定ip参数
+- 支持 多 IP 环境下，启动 server 时指定 IP 参数
 
 ## Bug 修复
 - 修复 server 重启可能导致 xid 重复问题
