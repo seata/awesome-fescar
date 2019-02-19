@@ -1,8 +1,18 @@
+title:Fescar分布式事务原理解析探秘
+
+author:kl
+
+keywords:Fescar、分布式事务
+
+date:2019/02/18
+
+
 # 前言
 
 fescar发布已有时日，分布式事务一直是业界备受关注的领域，fescar发布一个月左右便受到了近5000个star足以说明其热度。当然，在fescar出来之前，
 已经有比较成熟的分布式事务的解决方案开源了，比较典型的方案如LCN（https://github.com/codingapi/tx-lcn）的2pc型无侵入事务，
-目前lcn已发展到5.0，已支持和fescar事务模型类似的TCX型事务。还有如TCC型事务实现hmily（https://github.com/yu199195/hmily）、tcc-transaction(https://github.com/changmingxie/tcc-transaction)等。在微服务架构流行的当下、阿里这种开源大户背景下，fescar的发布无疑又掀起了研究分布式事务的热潮。fescar脱胎于阿里云商业分布式事务服务GTS，在线上环境提供这种公共服务其模式肯定经受了非常严苛的考验。其分布式事务模型TXC又仿于传统事务模型XA方案，主要区别在于资源管理器的定位一个在应用层一个在数据库层。博主觉得fescar的txc模型实现非常有研究的价值，所以今天我们来好好翻一翻fescar项目的代码。本文篇幅较长，浏览并理解本文大概耗时30~60分钟左右。
+目前lcn已发展到5.0，已支持和fescar事务模型类似的TCX型事务。还有如TCC型事务实现hmily（https://github.com/yu199195/hmily） tcc-transaction(https://github.com/changmingxie/tcc-transaction)等。
+在微服务架构流行的当下、阿里这种开源大户背景下，fescar的发布无疑又掀起了研究分布式事务的热潮。fescar脱胎于阿里云商业分布式事务服务GTS，在线上环境提供这种公共服务其模式肯定经受了非常严苛的考验。其分布式事务模型TXC又仿于传统事务模型XA方案，主要区别在于资源管理器的定位一个在应用层一个在数据库层。博主觉得fescar的txc模型实现非常有研究的价值，所以今天我们来好好翻一翻fescar项目的代码。本文篇幅较长，浏览并理解本文大概耗时30~60分钟左右。
 
 # 项目地址
 
@@ -46,7 +56,7 @@ fescar：https://github.com/alibaba/fescar
 第一步、先启动TC也就是【Server】模块，main方法直接启动就好，默认服务端口8091
 
 第二步、回到examples模块，将订单，业务，账户、仓库四个服务的配置文件配置好，主要是mysql数据源和zookeeper连接地址，这里要注意下，默认dubbo的zk注册中心依赖没有，启动的时候回抛找不到class的异常，需要添加如下的依赖：
-
+```
 <dependency>
     <groupId>com.101tec</groupId>
     <artifactId>zkclient</artifactId>
@@ -58,7 +68,7 @@ fescar：https://github.com/alibaba/fescar
         </exclusion>
     </exclusions>
 </dependency>
-
+```
 第三步、在BusinessServiceImpl中的模拟抛异常的地方打个断点，依次启动OrderServiceImpl、StorageServiceImpl、AccountServiceImpl、BusinessServiceImpl四个服务、等进断点后，查看数据库account\_tbl表，金额已减去400元，变成了599元。然后放开断点、BusinessServiceImpl模块模拟的异常触发，全局事务回滚，account\_tbl表的金额就又回滚到999元了
 
 如上，我们已经体验到fescar事务的控制能力了，下面我们具体看下它是怎么控制的。
@@ -68,22 +78,23 @@ fescar：https://github.com/alibaba/fescar
 ## 首先分析配置文件
 
 这个是一个铁律，任何一个技术或框架要集成，配置文件肯定是一个突破口。从上面的例子我们了解到，实例模块的配置文件中配置了一个全局事务扫描器实例，如：
-
+```
 <bean class="com.alibaba.fescar.spring.annotation.GlobalTransactionScanner">
     <constructor-arg value="dubbo-demo-app"/>
     <constructor-arg value="my\_test\_tx_group"/>
 </bean>
-
+```
 这个实例在项目启动时会扫描所有实例，具体实现见【spring】模块。并将标注了@GlobalTransactional注解的方法织入GlobalTransactionalInterceptor的invoke方法逻辑。同时应用启动时，会初始化TM（TmRpcClient）和RM（RmRpcClient）的实例，这个时候，服务已经和TC事务控制中心勾搭上了。在往下看就涉及到TM模块的事务模板类TransactionalTemplate。
 
 ## 【TM】模块启动全局事务
 
 全局事务的开启，提交、回滚都被封装在TransactionalTemplate中完成了，代码如：
+```
 
 public Object execute(TransactionalExecutor business) throws TransactionalExecutor.ExecutionException {
-    // 1\. get or create a transaction
+    // 1. get or create a transaction
     GlobalTransaction tx = GlobalTransactionContext.getCurrentOrCreate();
-    // 2\. begin transaction
+    // 2. begin transaction
     try {
         tx.begin(business.timeout(), business.name());
     } catch (TransactionException txe) {
@@ -95,7 +106,7 @@ public Object execute(TransactionalExecutor business) throws TransactionalExecut
         // Do Your Business
         rs = business.execute();
     } catch (Throwable ex) {
-        // 3\. any business exception, rollback.
+        // 3. any business exception, rollback.
         try {
             tx.rollback();
             // 3.1 Successfully rolled back
@@ -106,7 +117,7 @@ public Object execute(TransactionalExecutor business) throws TransactionalExecut
                 TransactionalExecutor.Code.RollbackFailure, ex);
         }
     }
-    // 4\. everything is fine, commit.
+    // 4. everything is fine, commit.
     try {
         tx.commit();
     } catch (TransactionException txe) {
@@ -116,7 +127,7 @@ public Object execute(TransactionalExecutor business) throws TransactionalExecut
     }
     return rs;
 }
-
+```
 更详细的实现在【TM】模块中被分成了两个Class实现，如下：
 
 DefaultGlobalTransaction ：全局事务具体的开启，提交、回滚动作
@@ -128,7 +139,7 @@ DefaultTransactionManager ：负责使用TmRpcClient向TC控制中心发送指�
 ## 【dubbo】全局事务xid的传递
 
 首先是xid的传递，目前已经实现了dubbo框架实现的微服务架构下的传递，其他的像spring cloud和motan等的想要实现也很容易，通过一般RPC通讯框架都有的filter机制，将xid从全局事务的发起节点传递到服务协从节点，从节点接收到后绑定到当前线程上线文环境中，用于在分支事务执行sql时判断是否加入全局事务。fescar的实现见【dubbo】模块如下：
-
+```
 @Activate(group = { Constants.PROVIDER, Constants.CONSUMER }, order = 100)
 public class TransactionPropagationFilter implements Filter {
 
@@ -173,7 +184,7 @@ public class TransactionPropagationFilter implements Filter {
         }
     }
 }
-
+```
 上面代码rpcXid不为空时，就加入到了RootContext的ContextCore中，这里稍微深入讲下。ContextCore是一个可扩展实现的接口，目前默认的实现是ThreadLocalContextCore，基于ThreadLocal来保存维护当前的xid。这里fescar提供了可扩展的机制，实现在【common】模块中，通过一个自定义的类加载器EnhancedServiceLoader加载需要扩展的服务类，这样只需要在扩展类加上@LoadLevel注解。标记order属性声明高优先级别，就可以达到扩展实现的目的。
 
 ## 【RM】模块本地资源管理的介入
@@ -203,18 +214,18 @@ fescar针对本地事务相关的接口，通过代理机制都实现了一遍�
 ### UpdateExecutor、DeleteExecutor、InsertExecutor：
 
 三个DML增删改执行器实现，主要在sql执行的前后对sql语句进行了解析，实现了如下两个抽象接口方法：
-
+```
 protected abstract TableRecords beforeImage() throws SQLException;
 
 protected abstract TableRecords afterImage(TableRecords beforeImage) throws SQLException;
-
+```
 在这个过程中通过解析sql生成了提供回滚操作的undo_log日志，日志目前是保存在msyql中的，和业务sql操作共用同一个事务。表的结构如下：
 
 ![](https://oscimg.oschina.net/oscnet/fd5c423815d3b84bdbc70d7efeb9cd16757.jpg)
 
 rollback\_info保存的undo\_log详细信息，是longblob类型的，结构如下：
 
-```json
+```
 {
     "branchId":3958194,
     "sqlUndoLogs":[
@@ -272,15 +283,15 @@ rollback\_info保存的undo\_log详细信息，是longblob类型的，结构如�
 ```
 
 这里贴的是一个update的操作，undo\_log记录的非常的详细，通过全局事务xid关联branchid，记录数据操作的表名，操作字段名，以及sql执行前后的记录数，如这个记录，表名=storage\_tbl,sql执行前ID=10，count=100，sql执行后id=10，count=98。如果整个全局事务失败，需要回滚的时候就可以生成：
-
+```
 update storage_tbl set count = 100 where id = 10;
-
+```
 这样的回滚sql语句执行了。
 
 ### SelectForUpdateExecutor：
 
 fescar的AT模式在本地事务之上默认支持读未提交的隔离级别，但是通过SelectForUpdateExecutor执行器，可以支持读已提交的隔离级别。代码如：
-
+```
 @Override
 public Object doExecute(Object... args) throws Throwable {
     SQLSelectRecognizer recognizer = (SQLSelectRecognizer) sqlRecognizer;
@@ -362,18 +373,18 @@ public Object doExecute(Object... args) throws Throwable {
     }
     return rs;
 }
-
+```
 关键代码见：
-
+```
 TableRecords selectPKRows = TableRecords.buildRecords(getTableMeta(), rsPK);
 statementProxy.getConnectionProxy().checkLock(selectPKRows);
-
+```
 通过selectPKRows表操作记录拿到lockKeys，然后到TC控制器端查询是否被全局锁定了，如果被锁定了，就重新尝试，直到锁释放返回查询结果。
 
 ## 分支事务的注册和上报
 
 在本地事务提交前，fescar会注册和上报分支事务相关的信息，见ConnectionProxy类的commit部分代码：
-
+```
 @Override
 public void commit() throws SQLException {
     if (context.inGlobalTransaction()) {
@@ -403,7 +414,7 @@ public void commit() throws SQLException {
         targetConnection.commit();
     }
 }
-
+```
 从这段代码我们可以看到，首先是判断是了是否是全局事务，如果不是，就直接提交了，如果是，就先向TC控制器注册分支事务，为了写隔离，在TC端会涉及到全局锁的获取。然后保存了用于回滚操作的undo_log日志，继而真正提交本地事务，最后向TC控制器上报事务状态。此时，阶段一的本地事务已完成了。
 
 ## 【server】模块协调全局
@@ -413,7 +424,7 @@ public void commit() throws SQLException {
 ![](https://oscimg.oschina.net/oscnet/3da6fd82debb9470eb4a5feb1eecac6d6a2.jpg)
 
 回到一开始的TransactionlTemplate，如果整个分布式事务失败需要回滚了，首先是TM向TC发起回滚的指令，然后TC接收到后，解析请求后会被路由到默认控制器类的doGlobalRollback方法内，最终在TC控制器端执行的代码如下：
-
+```
 @Override
 public void doGlobalRollback(GlobalSession globalSession, boolean retrying) throws TransactionException {
     for (BranchSession branchSession : globalSession.getReverseSortedBranches()) {
@@ -470,9 +481,9 @@ public void doGlobalRollback(GlobalSession globalSession, boolean retrying) thro
     }
     globalSession.end();
 }
-
+```
 如上代码可以看到，回滚时从全局事务会话中迭代每个分支事务，然后通知每个分支事务回滚。分支服务接收到请求后，首先会被路由到RMHandlerAT中的doBranchRollback方法，继而调用了RM中的branchRollback方法，代码如下：
-
+```
 @Override
 public BranchStatus branchRollback(String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
     DataSourceProxy dataSourceProxy = get(resourceId);
@@ -490,7 +501,7 @@ public BranchStatus branchRollback(String xid, long branchId, String resourceId,
     }
     return BranchStatus.PhaseTwo_Rollbacked;
 }
-
+```
 RM分支事务端最后执行的是UndoLogManager的undo方法，通过xid和branchid从数据库查询出回滚日志，完成数据回滚操作，整个过程都是同步完成的。如果全局事务是成功的，TC也会有类似的上述协调过程，只不过是异步的将本次全局事务相关的undo_log清除了而已。至此，就完成了2阶段的提交或回滚，也就完成了完整的全局事务事务的控制。
 
 # 结语
