@@ -511,15 +511,3 @@ RM分支事务端最后执行的是UndoLogManager的undo方法，通过xid和bra
 ### 作者简介：
 
 陈凯玲，2016年5月加入凯京科技。曾任职高级研发和项目经理，现任凯京科技研发中心架构&运维部负责人。pmp项目管理认证，阿里云MVP。热爱开源，先后开源过多个热门项目。热爱分享技术点滴，独立博客KL博客（[http://www.kailing.pub](http://www.kailing.pub/)）博主。
-
-欢迎加入凯京开源技术QQ群：613025121，和我们一起交流互联网应用的技术架构落地实践
-
-![](https://oscimg.oschina.net/oscnet/2cd486141b9860ec38d1b73c474c075211d.jpg)
-
-### 关于架构&运维部
-
-凯京研发中心架构&运维部的工作主要分两大部分，架构部分主要负责框架中间件的研究，如dubbo、apollo、skywalking、xxljob、分布式事务等、公司内开源项目（[https://gitee.com/kekingcn](https://gitee.com/kekingcn)）以及公共服务公共组件的研发维护、新技术的引进以及落地等。运维部分主要负责devops系统研发以及k8s容器环境的维护等工作。
-
-### 架构组招聘
-
-目前架构组还有两个虚位以待，欢迎志同道合的你来和我们一起交流。简历可发送至邮箱：chenkailing@keking.cn
