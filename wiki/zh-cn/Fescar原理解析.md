@@ -22,7 +22,7 @@ fescar：https://github.com/alibaba/fescar
 
 # fescar的TXC模型
 
-![](https://oscimg.oschina.net/oscnet/c45496461bca15ecd522e497d98ba954f95.jpg)
+![](../../img/c45496461bca15ecd522e497d98ba954f95.jpg)
 
 上图为fescar官方针对TXC模型制作的示意图。不得不说大厂的图制作的真的不错，结合示意图我们可以看到TXC实现的全貌。TXC的实现通过三个组件来完成。也就是上图的三个深黄色部分，其作用如下，：
 
@@ -38,7 +38,7 @@ fescar：https://github.com/alibaba/fescar
 
 项目拉下来，用IDE打开后的目录结构如下，下面先大致的看下每个模块的实现
 
-![](https://oscimg.oschina.net/oscnet/a88cf147f489f913886ef1785d94183bf09.jpg)
+![](../../img/a88cf147f489f913886ef1785d94183bf09.jpg)
 
 -   common ：公共组件，提供常用辅助类，静态变量、扩展机制类加载器、以及定义全局的异常等
 -   config : 配置加载解析模块，提供了配置的基础接口，目前只有文件配置实现，后续会有nacos等配置中心的实现
@@ -191,21 +191,21 @@ public class TransactionPropagationFilter implements Filter {
 
 fescar针对本地事务相关的接口，通过代理机制都实现了一遍代理类，如数据源（DataSourceProxy）、ConnectionProxy、StatementProxy等。这个在配置文件中也可以看出来，也就是说，我们要使用fescar分布式事务，一定要配置fescar提供的代理数据源。如：
 
-![](https://oscimg.oschina.net/oscnet/af317255c71a5c1bf46f7140387acf365f8.jpg)
+![](../../img/af317255c71a5c1bf46f7140387acf365f8.jpg)
 
 配置好代理数据源后，从DataSourceProxy出发，本地针对数据库的所有操作过程我们就可以随意控制了。从上面xid传递，已经知道了xid被保存在RootContext中了，那么请看下面的代码，就非常清楚了：
 
 首先看StatementProxy的一段代码
 
-![](https://oscimg.oschina.net/oscnet/17896deea47b9aee518812b039c39101d8f.jpg)
+![](../../img/17896deea47b9aee518812b039c39101d8f.jpg)
 
 在看ExecuteTemplate中的代码
 
-![](https://oscimg.oschina.net/oscnet/04488a2745a5d564498462ed64c506174d2.jpg)
+![](../../img/04488a2745a5d564498462ed64c506174d2.jpg)
 
 和【TM】模块中的事务管理模板类TransactionlTemplate类似，这里非常关键的逻辑代理也被封装在了ExecuteTemplate模板类中。因重写了Statement有了StatementProxy实现，在执行原JDBC的executeUpdate方法时，会调用到ExecuteTemplate的execute逻辑。在sql真正执行前，会判断RootCOntext当前上下文中是否包含xid，也就是判断当前是否是全局分布式事务。如果不是，就直接使用本地事务，如果是，这里RM就会增加一些分布式事务相关的逻辑了。这里根据sql的不同的类型，fescar封装了五个不同的执行器来处理，分别是UpdateExecutor、DeleteExecutor、InsertExecutor、SelectForUpdateExecutor、PlainExecutor，结构如下图：
 
-![](https://oscimg.oschina.net/oscnet/bb9a2f07054f19bc21adc332671de4f7b75.jpg)
+![](../../img/bb9a2f07054f19bc21adc332671de4f7b75.jpg)
 
 ### PlainExecutor：
 
@@ -221,7 +221,7 @@ protected abstract TableRecords afterImage(TableRecords beforeImage) throws SQLE
 ```
 在这个过程中通过解析sql生成了提供回滚操作的undo_log日志，日志目前是保存在msyql中的，和业务sql操作共用同一个事务。表的结构如下：
 
-![](https://oscimg.oschina.net/oscnet/fd5c423815d3b84bdbc70d7efeb9cd16757.jpg)
+![](../../img/fd5c423815d3b84bdbc70d7efeb9cd16757.jpg)
 
 rollback\_info保存的undo\_log详细信息，是longblob类型的，结构如下：
 
@@ -421,7 +421,7 @@ public void commit() throws SQLException {
 
 关于server模块，我们可以聚焦在DefaultCoordinator这个类，这个是AbstractTCInboundHandler控制处理器默认实现。主要实现了全局事务开启，提交，回滚，状态查询，分支事务注册，上报，锁检查等接口，如：
 
-![](https://oscimg.oschina.net/oscnet/3da6fd82debb9470eb4a5feb1eecac6d6a2.jpg)
+![](../../img/3da6fd82debb9470eb4a5feb1eecac6d6a2.jpg)
 
 回到一开始的TransactionlTemplate，如果整个分布式事务失败需要回滚了，首先是TM向TC发起回滚的指令，然后TC接收到后，解析请求后会被路由到默认控制器类的doGlobalRollback方法内，最终在TC控制器端执行的代码如下：
 ```
