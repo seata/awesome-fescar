@@ -278,7 +278,7 @@ public class FescarFeignClientAutoConfiguration {
 }
 ```
 
-FescarFeignClientAutoConfiguration在存在Client.class时生效，且要求作用在FeignAutoConfiguration之前。
+FescarFeignClientAutoConfiguration在存在Client.class时生效，且要求作用在FeignAutoConfiguration之前。且由于FeignClientsConfiguration.class是在FeignAutoConfiguration生成FeignContext生效的，所以根据依赖关系，FescarFeignClientAutoConfiguration同样早于FeignClientsConfiguration。
 
 FescarFeignClientAutoConfiguration自定义了Feign.Builder，针对于feign.sentinel feign.hystrix 以及feign的情况做了适配，目的是自定义Feign中Client的实现为 FescarFeignClient。
 
@@ -362,7 +362,61 @@ public interface BeanPostProcessor {
 
 BeanPostProcessor的两个方法可以对Spring容器中的Bean做预处理，postProcessBeforeInitialization处理时机是初始化之前，postProcessAfterInitialization的处理时机是初始化之后，这2个方法的返回值可以是原先生成的实例bean，或者使用wrapper包装后的实例。
 
-FescarContextBeanPostProcessor  将FeignContext 包装成 FescarFeignContext，FescarBeanPostProcessor  将FeignClient包装成FescarLoadBalancerFeignClient 返回。另外试想一下，对于开发者采用@Configuration 注解的自定义配置的Feign Client对象，那么Fescar的auto configuration是不是就处理不到了？这也是FescarContextBeanPostProcessor 存在的意义，可以在bean生成后做预处理增强。
+FescarContextBeanPostProcessor  将FeignContext 包装成 FescarFeignContext，FescarBeanPostProcessor  将FeignClient包装成FescarLoadBalancerFeignClient 返回。
+
+FeignAutoConfiguration中的FeignContext并没有加ConditionalOnXXX的条件，所以Fescar采用预置处理的方式将FeignContext包装成FescarFeignContext。
+
+```java
+    @Bean
+	public FeignContext feignContext() {
+		FeignContext context = new FeignContext();
+		context.setConfigurations(this.configurations);
+		return context;
+	}
+```
+
+而对于Feign Client，FeignClientFactoryBean中会获取FeignContext的实例对象。对于开发者采用@Configuration 注解的自定义配置的Feign Client对象，这里会被配置到builder，导致FescarFeignBuilder中增强后的FescarFeignCliet失效。FeignClientFactoryBean中关键代码如下：
+
+```java
+	/**
+	 * @param <T> the target type of the Feign client
+	 * @return a {@link Feign} client created with the specified data and the context information
+	 */
+	<T> T getTarget() {
+		FeignContext context = applicationContext.getBean(FeignContext.class);
+		Feign.Builder builder = feign(context);
+
+		if (!StringUtils.hasText(this.url)) {
+			if (!this.name.startsWith("http")) {
+				url = "http://" + this.name;
+			}
+			else {
+				url = this.name;
+			}
+			url += cleanPath();
+			return (T) loadBalance(builder, context, new HardCodedTarget<>(this.type,
+					this.name, url));
+		}
+		if (StringUtils.hasText(this.url) && !this.url.startsWith("http")) {
+			this.url = "http://" + this.url;
+		}
+		String url = this.url + cleanPath();
+		Client client = getOptional(context, Client.class);
+		if (client != null) {
+			if (client instanceof LoadBalancerFeignClient) {
+				// not load balancing because we have a url,
+				// but ribbon is on the classpath, so unwrap
+				client = ((LoadBalancerFeignClient)client).getDelegate();
+			}
+			builder.client(client);
+		}
+		Targeter targeter = get(context, Targeter.class);
+		return (T) targeter.target(this, builder, context, new HardCodedTarget<>(
+				this.type, this.name, url));
+	}
+```
+
+FescarContextBeanPostProcessor 的存在，即使开发者对FeignClient自定义操作，依旧可以完成Fescar所需的全局事务的增强。
 
 对于FescarFeignObjectWrapper，我们重点关注下Wrapper方法：
 
@@ -382,7 +436,7 @@ FescarContextBeanPostProcessor  将FeignContext 包装成 FescarFeignContext，F
 
 Wrapper方法中，如果bean是LoadBalancerFeignClient的实例对象，那么首先通过client.getDelegate()方法将LoadBalancerFeignClient代理的实际Client对象取出后包装成FescarFeignClient，再生成LoadBalancerFeignClient的子类FescarLoadBalancerFeignClient对象。如果bean是Client的实例对象且不是FescarFeignClient LoadBalancerFeignClient，那么bean会直接包装生成 FescarFeignClient。
 
-上面的流程设计还是比较巧妙的，首先自定义了Feign Builder的Bean，保证了Client均是经过增强后的FescarFeignClient 。再通过 BeanPostProcessor 对Spring 容器中的Bean做了一遍包装，保证容器内的Bean均是增强后FescarFeignClient 。
+上面的流程设计还是比较巧妙的，首先根据Spring boot的Auto Configuration控制了配置的先后顺序，同时自定义了Feign Builder的Bean，保证了Client均是经过增强后的FescarFeignClient 。再通过 BeanPostProcessor 对Spring 容器中的Bean做了一遍包装，保证容器内的Bean均是增强后FescarFeignClient ，避免FeignClientFactoryBean getTarget方法的替换动作。
 
 ##### Hystrix
 
@@ -481,6 +535,8 @@ public class FescarHystrixAutoConfiguration {
 ### 参考文献
 
 - [Fescar官方概览](https://github.com/alibaba/fescar/wiki/%E6%A6%82%E8%A7%88)
+
+- [spring-cloud-openfeign原理分析](http://techblog.ppdai.com/2018/05/28/20180528/)
 
   
 
