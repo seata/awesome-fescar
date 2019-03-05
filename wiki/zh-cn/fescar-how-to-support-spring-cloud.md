@@ -538,7 +538,8 @@ public class FescarHystrixAutoConfiguration {
 
 - spring-cloud-openfeign: https://github.com/spring-cloud/spring-cloud-openfeign
 
-  
-  作者
+ 本文作者
+ 
+  郭树抗，GitHub ID ywind，曾就职于华为终端云，现搜狐智能媒体中心Java工程师，目前主要负责搜狐号相关开发
   
 
