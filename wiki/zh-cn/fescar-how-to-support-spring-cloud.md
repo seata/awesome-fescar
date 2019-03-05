@@ -162,7 +162,7 @@ afterCompletion 在 handler 完成后被调用，该方法用来执行资源的�
 
 #### 微服务调用方
 
-被调用方的机制非常明确简单，调用相对来讲就要复杂一点了。Fescar 目前的代码将请求的情况分为 RestTemplate、Feign、Feign+Hystrix，不同的组件通过 Spring Boot 的 Auto Configuration 来完成自动的配置，具体的配置类可以看 spring.factories ，下文也会基本上走一遍相关的配置类。
+被调用方的机制非常明确简单，调用相对来讲就要复杂一点了。Fescar 目前的代码将请求的情况分为 RestTemplate、Feign、Feign+Hystrix、Feign+Sentinel ，不同的组件通过 Spring Boot 的 Auto Configuration 来完成自动的配置，具体的配置类可以看 spring.factories ，下文也会基本上走一遍相关的配置类。
 
 #####  RestTemplate
 
@@ -219,7 +219,7 @@ public class FescarRestTemplateAutoConfiguration {
 }
 ```
 
-init 方法遍历所有的 restTemplate ，并将原来 restTemplate 中的拦截器取出，增加 fescarRestTemplateInterceptor 后置入。
+init 方法遍历所有的 restTemplate ，并将原来 restTemplate 中的拦截器取出，增加 fescarRestTemplateInterceptor 后置入。RestTemplate 场景下的机制比较清楚明了。
 
 ##### Feign
 
@@ -285,6 +285,11 @@ FescarFeignClientAutoConfiguration 自定义了 Feign.Builder，针对于 feign.
 ```java
 HystrixFeign.builder().retryer(Retryer.NEVER_RETRY)
       .client(new FescarFeignClient(beanFactory))
+```
+
+```java
+SentinelFeign.builder().retryer(Retryer.NEVER_RETRY)
+				.client(new FescarFeignClient(beanFactory));
 ```
 
 FescarFeignClient 是对原来的 Feign 客户端代理增强：
@@ -438,7 +443,7 @@ wrap 方法中，如果 bean 是 LoadBalancerFeignClient 的实例对象，那�
 
 上面的流程设计还是比较巧妙的，首先根据 Spring boot 的 Auto Configuration 控制了配置的先后顺序，同时自定义了 Feign Builder的Bean，保证了 Client 均是经过增强后的 FescarFeignClient 。再通过 BeanPostProcessor 对Spring 容器中的 Bean 做了一遍包装，保证容器内的Bean均是增强后 FescarFeignClient ，避免 FeignClientFactoryBean getTarget 方法的替换动作。
 
-##### Hystrix
+##### Hystrix 隔离
 
 下面我们再来看下 Hystrix 部分，为什么要单独把 Hystrix 拆出来看呢，而且 Fescar 代码也单独实现了个策略类。目前事务上下文 RootContext 的默认实现是基于 ThreadLocal 方式的 ThreadLocalContextCore，也就是上下文其实是和线程绑定的。Hystrix 本身有两种隔离状态的模式，基于信号量或者基于线程池进行隔离。Hystrix 官方建议是采取线程池的方式来充分隔离，也是一般情况下在采用的模式： 
 
