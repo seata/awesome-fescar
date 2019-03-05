@@ -30,7 +30,7 @@ RPC 请求过程分为调用方与被调用方两部分，我们将 XID 在请�
 
 ### Fescar 与 Spring Cloud Alibaba 集成部分源码解析 
 
-本部分源码全部来自于 spring-cloud-alibaba-fescar. 源码解析部分主要包括AutoConfiguration、微服务被调用方和微服务调用方三大部分。对于微服务调用方方式具体分为 RestTemplate 和 Feign，对于 Feign 请求方式又结合 Hystrix 和 Sentinel 使用模式。
+本部分源码全部来自于 spring-cloud-alibaba-fescar. 源码解析部分主要包括AutoConfiguration、微服务被调用方和微服务调用方三大部分。对于微服务调用方方式具体分为 RestTemplate 和 Feign，对于 Feign 请求方式又进一步细分为结合 Hystrix 和 Sentinel 的使用模式。
 
 #### Fescar AutoConfiguration
 对于 AutoConfiguration 部分的解析此处只介绍与 Fescar 启动相关的部分，其他部分的解析将穿插于【微服务被调用方】和【微服务调用方】章节进行介绍。
