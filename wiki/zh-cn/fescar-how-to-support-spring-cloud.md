@@ -9,15 +9,15 @@ keywords:
 - Fescar
 ---
 
-最近一直比较关注分布式事务相关的内容，恰好阿里开源了GTS的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是Java届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star ⭐。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
+最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star ⭐。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
 
 <!-- more -->
 
-### Fescar简要介绍
+### Fescar 简要介绍
 
 常见的分布式事务方式有基于 2PC 的 XA (e.g. atomikos)，从业务层入手的 TCC( e.g. byteTCC)、事务消息 ( e.g. RocketMQ Half Message) 等等。XA 是需要本地数据库支持的分布式事务的协议，资源锁在数据库层面导致性能较差，而支付宝作为布道师引入的 TCC 模式需要大量的业务代码保证，开发维护成本较高。
 
-分布式事务是业界比较关注的领域，这也是短短时间 Fescar 能收获6k Star的原因之一。Fescar 名字取自 **Fast & EaSy Commit And Rollback** ，简单来说Fescar通过对本地RDBMS分支事务的协调来完成全局事务的推进，是工作应用层的中间件。优点明显，相对于XA模式是性能较好，相对于TCC等方式开发成本较低。
+分布式事务是业界比较关注的领域，这也是短短时间 Fescar 能收获6k Star的原因之一。Fescar 名字取自 **Fast & Easy Commit And Rollback** ，简单来说Fescar通过对本地 RDBMS 分支事务的协调来驱动完成全局事务，是工作在应用层的中间件。主要优点是相对于XA模式是性能较好不长时间占用连接资源，相对于 TCC 方式开发成本和业务侵入性较低。
 
 类似于 XA，Fescar 将角色分为 TC、RM、TM，事务整体过程模型如下：
 
@@ -31,17 +31,20 @@ keywords:
 5. TC 调度 XID 下管辖的全部分支事务完成提交或回滚请求。
 ```
 
-其中 TC 是单独的进程，维护全局事务的运行状态，负责协调并驱动全局事务的提交或回滚。TM RM 则与应用程序工作在同一 JVM 进程。RM对 JDBC 数据源采用代理的方式对底层数据库做管理，利用语法解析，在执行事务保留快照，并生成 undo log。大概的流程和模型划分就介绍到这里，下面开始对 Fescar 事务传播机制的分析。
+其中在目前的实现版本中 TC 是独立部署的进程，维护全局事务的操作记录和全局锁记录，负责协调并驱动全局事务的提交或回滚。TM RM 则与应用程序工作在同一应用进程。RM对 JDBC 数据源采用代理的方式对底层数据库做管理，利用语法解析，在执行事务保留快照，并生成 undo log。大概的流程和模型划分就介绍到这里，下面开始对 Fescar 事务传播机制的分析。
 
-### Fescar事务传播机制
+### Fescar 事务传播机制
 
-Fescar 事务是怎么在微服务调用链中传播的呢？从前一节的事务流程我们可以看到，当开启一个全局事务的时候，TC 会创建一个全局唯一的 XID，XID 是一个全局事务的唯一标识。如果想要当前的分支事务纳入全局事务的管理，只需要将该XID 绑定到当前的事务上下文中即可。我们根据不同的服务框架机制，将 XID 在链路中传递即可实现事务的传播。
+Fescar 事务传播包括应用内事务嵌套调用和跨服务调用的事务传播。Fescar 事务是怎么在微服务调用链中传播的呢？Fescar 提供了事务 API 允许用户手动绑定事务的 XID 并加入到全局事务中，所以我们根据不同的服务框架机制，将 XID 在链路中传递即可实现事务的传播。
 
-RPC 请求过程分为调用方与被调用方两部分，XID 在请求与响应时做处理即可。调用方即请求方将当前事务上下文中的XID 取出，利用RPC协议传递给被调用方，被调用方从请求中的将 XID 取出，并绑定到自己的事务上下文中，纳入全局事务。微服务框架一般都有相应的 Filter 机制，那么 Spring Cloud 用的是哪个机制呢，我们来分析下 Spring Cloud 与Fescar 的整合过程。Code： [spring-cloud-alibaba-fescar](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-fescar)
+RPC 请求过程分为调用方与被调用方两部分，我们将 XID 在请求与响应时做相应的处理即可。大致过程为：调用方即请求方将当前事务上下文中的 XID 取出，通过RPC协议传递给被调用方；被调用方从请求中的将 XID 取出，并绑定到自己的事务上下文中，纳入全局事务。微服务框架一般都有相应的 Filter 和 Interceptor 机制，我们来分析下 Spring Cloud 与Fescar 的整合过程。
 
+### Fescar 与 Spring Cloud Alibaba 集成部分源码解析 
+
+本部分源码全部来自于 spring-cloud-alibaba-fescar. 源码解析部分主要包括 微服务被调用方 和 微服务调用方两大部分，每部分又会穿插 autoconfig 的分析，对于微服务调用方方式具体分为 RestTemplate 和 Feign，对于 Feign 请求方式又结合 Hystrix 和 Sentinel 使用模式。
 #### 微服务被调用方
 
-由于调用方的逻辑比较多一点，我们先分析被调用方的逻辑。针对于 Spring Cloud 项目，默认采用的 RPC 传输协议时 HTTP 协议，所以 Fescar 利用了 HandlerInterceptor 机制来对HTTP的请求做拦截。
+由于调用方的逻辑比较多一点，我们先分析被调用方的逻辑。针对于 Spring Cloud 项目，默认采用的 RPC 传输协议时 HTTP 协议，所以使用了 HandlerInterceptor 机制来对HTTP的请求做拦截。
 
 HandlerInterceptor 是 Spring 提供的接口， 它有以下三个方法可以被覆写。
 
@@ -75,9 +78,9 @@ HandlerInterceptor 是 Spring 提供的接口， 它有以下三个方法可以�
 	}
 ```
 
-根据注释，我们可以很明确的看到各个方法的作用时间和常用用途。对于 Fescar 来讲，它重写了 preHandle、afterCompletion 方法。
+根据注释，我们可以很明确的看到各个方法的作用时间和常用用途。对于 Fescar 集成来讲，它需要重写了 preHandle、afterCompletion 方法。
 
-FescarHandlerInterceptor 的作用是将 Fescar 传递过来的 XID，绑定到本地事务的上下文中，并且在请求完成后清理相关资源。Fescar 在 FescarHandlerInterceptorConfiguration 中配置了所有的url均进行拦截，对所有的请求过来均会执行该拦截器，进行 XID 的转换与事务绑定。
+FescarHandlerInterceptor 的作用是将服务链路传递过来的 XID，绑定到服务节点的事务上下文中，并且在请求完成后清理相关资源。FescarHandlerInterceptorConfiguration 中配置了所有的 url 均进行拦截，对所有的请求过来均会执行该拦截器，进行 XID 的转换与事务绑定。
 
 ```java
 /**
@@ -142,27 +145,15 @@ public class FescarHandlerInterceptor implements HandlerInterceptor {
 
 
 
-preHandle 在 handler 执行前被调用，xid 为当前事务上下文已经绑定的全局事务 id，rpcXid 为请求通过 HTTP Header 传递过来的全局事务 id。Fescar 在 preHandle 方法中判断如果当前事务上下文中没有 XID，且 rpcXid 不为空，那么就将 rpcXid 绑定到当前的事务上下文。这里的处理逻辑我理解这里也对应到了 Fescar 文档提到的传播机制：
+preHandle 在请求执行前被调用，xid 为当前事务上下文已经绑定的全局事务的唯一标识，rpcXid 为请求通过 HTTP Header 传递过来需要绑定的全局事务标识。preHandle 方法中判断如果当前事务上下文中没有 XID，且 rpcXid 不为空，那么就将 rpcXid 绑定到当前的事务上下文。
 
-```
-对应到 Java EE 规范和 Spring 定义的事务传播属性，Fescar 的支持如下：
+afterCompletion 在请求完成后被调用，该方法用来执行资源的相关清理动作。Fescar 通过 RootContext.unbind() 方法对事务上下文涉及到的 XID 进行解绑。下面 if 中的逻辑是为了代码的健壮性考虑，如果遇到 rpcXid和 unbindXid 不相等的情况，再将 unbindXid 重新绑定回去。
 
-PROPAGATION_REQUIRED： 默认支持
-PROPAGATION_SUPPORTS： 默认支持
-PROPAGATION_MANDATORY：应用通过 API 来实现
-PROPAGATION_REQUIRES_NEW：应用通过 API 来实现
-PROPAGATION_NOT_SUPPORTED：应用通过 API 来实现
-PROPAGATION_NEVER：应用通过 API 来实现
-PROPAGATION_NESTED：不支持
-```
-
-afterCompletion 在 handler 完成后被调用，该方法用来执行资源的清理动作。Fescar 通过 RootContext.unbind() 方法对事务上下文涉及到的 XID 进行解绑。下面 if 中的逻辑是为了代码的健壮性考虑，如果遇到 rpcXid和 unbindXid 不相等的情况，再将 unbindXid 反绑回去。
-
-对于 Spring Cloud 来讲，默认采用的 RPC 方式是 HTTP 的方式，所以对被调用方来讲，它的请求拦截方式不用做任何区分，只需要从 Header 中将 XID 就可以取出绑定到自己的事务上下文中即可。但是对于调用方由于请求组件的多样化，包括熔断隔离机制，所以要区分不同的情况做处理，我们来分析一下。
+对于 Spring Cloud 来讲，默认采用的 RPC 方式是 HTTP 的方式，所以对被调用方来讲，它的请求拦截方式不用做任何区分，只需要从 Header 中将 XID 就可以取出绑定到自己的事务上下文中即可。但是对于调用方由于请求组件的多样化，包括熔断隔离机制，所以要区分不同的情况做处理，后面我们来具体分析一下。
 
 #### 微服务调用方
 
-被调用方的机制非常明确简单，调用相对来讲就要复杂一点了。Fescar 目前的代码将请求的情况分为 RestTemplate、Feign、Feign+Hystrix、Feign+Sentinel ，不同的组件通过 Spring Boot 的 Auto Configuration 来完成自动的配置，具体的配置类可以看 spring.factories ，下文也会基本上走一遍相关的配置类。
+Fescar 将请求方式分为：RestTemplate、Feign、Feign+Hystrix 和 Feign+Sentinel 。不同的组件通过 Spring Boot 的 Auto Configuration 来完成自动的配置，具体的配置类可以看 spring.factories ，下文也会介绍相关的配置类。
 
 #####  RestTemplate
 
@@ -185,9 +176,9 @@ public class FescarRestTemplateInterceptor implements ClientHttpRequestIntercept
 }
 ```
 
-FescarRestTemplateInterceptor 实现了 ClientHttpRequestInterceptor 接口的 intercept 方法，对调用的请求做了包装，在发送请求时将当前事务上下文的 XID 取出，放到了 HTTP Header 中。
+FescarRestTemplateInterceptor 实现了 ClientHttpRequestInterceptor 接口的 intercept 方法，对调用的请求做了包装，在发送请求时若存在 Fescar 事务上下文 XID 则取出并放到 HTTP Header 中。
 
-FescarRestTemplateInterceptor 配套了一个 FescarRestTemplateAutoConfiguration ，用于实现将 FescarRestTemplateInterceptor 配置到 RestTemplate 中去。
+FescarRestTemplateInterceptor 通过 FescarRestTemplateAutoConfiguration 实现将 FescarRestTemplateInterceptor 配置到 RestTemplate 中去。
 
 ```java
 @Configuration
@@ -219,11 +210,13 @@ public class FescarRestTemplateAutoConfiguration {
 }
 ```
 
-init 方法遍历所有的 restTemplate ，并将原来 restTemplate 中的拦截器取出，增加 fescarRestTemplateInterceptor 后置入。RestTemplate 场景下的机制比较清楚明了。
+init 方法遍历所有的 restTemplate ，并将原来 restTemplate 中的拦截器取出，增加 fescarRestTemplateInterceptor 后置入并重排序。
 
 ##### Feign
 
-那么再来看下 Feign 的相关代码，该包下面的类还是比较多的，先从 AutoConfiguration 入手
+![Feign 类关系图](../../img/20190305184812.png)
+
+接下来看下 Feign 的相关代码，该包下面的类还是比较多的，我们先从其 AutoConfiguration 入手。
 
 ```java
 @Configuration
@@ -278,9 +271,9 @@ public class FescarFeignClientAutoConfiguration {
 }
 ```
 
-FescarFeignClientAutoConfiguration 在存在 Client.class 时生效，且要求作用在 FeignAutoConfiguration 之前。且由于FeignClientsConfiguration.class 是在 FeignAutoConfiguration 生成 FeignContext 生效的，所以根据依赖关系， FescarFeignClientAutoConfiguration 同样早于 FeignClientsConfiguration。
+FescarFeignClientAutoConfiguration 在存在 Client.class 时生效，且要求作用在 FeignAutoConfiguration 之前。由于FeignClientsConfiguration 是在 FeignAutoConfiguration 生成 FeignContext 生效的，所以根据依赖关系， FescarFeignClientAutoConfiguration 同样早于 FeignClientsConfiguration。
 
-FescarFeignClientAutoConfiguration 自定义了 Feign.Builder，针对于 feign.sentinel feign.hystrix  以及 feign 的情况做了适配，目的是自定义 Feign中Client 的实现为 FescarFeignClient。
+FescarFeignClientAutoConfiguration 自定义了 Feign.Builder，针对于 feign.sentinel，feign.hystrix  和 feign 的情况做了适配，目的是自定义 feign 中 Client 的真正实现为 FescarFeignClient。
 
 ```java
 HystrixFeign.builder().retryer(Retryer.NEVER_RETRY)
@@ -292,7 +285,11 @@ SentinelFeign.builder().retryer(Retryer.NEVER_RETRY)
 				.client(new FescarFeignClient(beanFactory));
 ```
 
-FescarFeignClient 是对原来的 Feign 客户端代理增强：
+```java
+Feign.builder().client(new FescarFeignClient(beanFactory));
+```
+
+FescarFeignClient 是对原来的 Feign 客户端代理增强，具体代码见下图：
 
 ```java
 public class FescarFeignClient implements Client {
@@ -342,34 +339,36 @@ public class FescarFeignClient implements Client {
 				request.charset());
 	}
 
-
 ```
 
-方法相当明了，Feign 的请求包装对应于被调用方的 inteceptor 的解析过程。Interceptor 是从 HTTP Header 中将 XID 取出，那么 Feign 就是反向操作。上面的过程中我们可以看到，Fescar 对原来的 Request 做了修改，它首先将 XID 从当前的事务上下文中取出，如果 XID 不为空的情况下，将 XID 放到了 Header 中。
+上面的过程中我们可以看到，FescarFeignClient 对原来的 Request 做了修改，它首先将 XID 从当前的事务上下文中取出，如果 XID 不为空的情况下，将 XID 放到了 Header 中。
 
-FeignBeanPostProcessorConfiguration 定义了3个bean，FescarContextBeanPostProcessor FescarBeanPostProcessor FescarFeignObjectWrapper。FescarContextBeanPostProcessor FescarBeanPostProcessor 实现了Spring  BeanPostProcessor 接口
-
+FeignBeanPostProcessorConfiguration 定义了3个bean：FescarContextBeanPostProcessor、FescarBeanPostProcessor 和 FescarFeignObjectWrapper。其中 FescarContextBeanPostProcessor FescarBeanPostProcessor 实现了Spring  BeanPostProcessor 接口。
+以下为 FescarContextBeanPostProcessor 实现。
 ```java
-public interface BeanPostProcessor {
+    @Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName)
+			throws BeansException {
+		if (bean instanceof FeignContext && !(bean instanceof FescarFeignContext)) {
+			return new FescarFeignContext(getFescarFeignObjectWrapper(),
+					(FeignContext) bean);
+		}
+		return bean;
+	}
 
-   @Nullable
-   default Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-      return bean;
-   }
-
-   @Nullable
-   default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-      return bean;
-   }
-
-}
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName)
+			throws BeansException {
+		return bean;
+	}
 ```
 
-BeanPostProcessor 的两个方法可以对 Spring 容器中的 Bean 做预处理，postProcessBeforeInitialization 处理时机是初始化之前，postProcessAfterInitialization 的处理时机是初始化之后，这2个方法的返回值可以是原先生成的实例 bean，或者使用 wrapper 包装后的实例。
+BeanPostProcessor 中的两个方法可以对 Spring 容器中的 Bean 做前后处理，postProcessBeforeInitialization 处理时机是初始化之前，postProcessAfterInitialization 的处理时机是初始化之后，这2个方法的返回值可以是原先生成的实例 bean，或者使用 wrapper 包装后的实例。
 
-FescarContextBeanPostProcessor  将 FeignContext 包装成 FescarFeignContext，FescarBeanPostProcessor  将 FeignClient 包装成 FescarLoadBalancerFeignClient 返回。
+FescarContextBeanPostProcessor  将 FeignContext 包装成 FescarFeignContext。   
+FescarBeanPostProcessor  将 FeignClient 根据是否继承了LoadBalancerFeignClient 包装成 FescarLoadBalancerFeignClient 和 FescarFeignClient。
 
-FeignAutoConfiguration 中的 FeignContext 并没有加 ConditionalOnXXX 的条件，所以 Fescar 采用预置处理的方式将FeignContext 包装成 FescarFeignContext。
+FeignAutoConfiguration 中的 FeignContext 并没有加 ConditionalOnXXX 的条件，所以 Fescar 采用预置处理的方式将 FeignContext 包装成 FescarFeignContext。
 
 ```java
     @Bean
@@ -420,7 +419,8 @@ FeignAutoConfiguration 中的 FeignContext 并没有加 ConditionalOnXXX 的条�
 				this.type, this.name, url));
 	}
 ```
-
+上述代码根据是否指定了注解参数中的 URL 来选择直接调用 URL 还是走负载均衡，targeter.target 通过动态代理创建对象。大致过程为：将解析出的feign方法放入map
+，再通过将其作为参数传入生成InvocationHandler，进而生成动态代理对象。   
 FescarContextBeanPostProcessor 的存在，即使开发者对 FeignClient 自定义操作，依旧可以完成 Fescar 所需的全局事务的增强。
 
 对于 FescarFeignObjectWrapper，我们重点关注下Wrapper方法：
@@ -528,20 +528,17 @@ public class FescarHystrixAutoConfiguration {
 
 }
 ```
-
-
-
-### 结语
-
-本文只是介绍了下 Fescar 在 Spring Cloud 事务传递过程，更多更详细的内容请参考官方文档。总的来说，如果需要将Fescar 融合到另外的三方 RPC 框架中，只需要找到对应的机制来传递全局事务的 XID，将 XID 绑定在本地分支事务中即可。这两天对 Fescar 的了解下来，我的理解 Fescar 是一个工作在应用层，需要底层本地事务型数据库支撑，并对事务隔离级别等事务特性做了权衡的分布式事务中间件。
-
-个人能力有限，不对的地方烦请指正。
+### Fescar 启动
 
 ### 参考文献
 
-- [Fescar官方概览](https://github.com/alibaba/fescar/wiki/%E6%A6%82%E8%A7%88)
+- Fescar: https://github.com/alibaba/fescar
 
-- [spring-cloud-openfeign原理分析](http://techblog.ppdai.com/2018/05/28/20180528/)
+- Spring Cloud Alibaba: https://github.com/spring-cloud-incubator/spring-cloud-alibaba
 
+- spring-cloud-openfeign: https://github.com/spring-cloud/spring-cloud-openfeign
+
+  
+  作者
   
 
