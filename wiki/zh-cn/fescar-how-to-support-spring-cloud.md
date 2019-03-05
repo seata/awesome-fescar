@@ -2,8 +2,6 @@
 
 最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star ⭐。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
 
-<!-- more -->
-
 ### Fescar 简介
 
 常见的分布式事务方式有基于 2PC 的 XA (e.g. atomikos)，从业务层入手的 TCC( e.g. byteTCC)、事务消息 ( e.g. RocketMQ Half Message) 等等。XA 是需要本地数据库支持的分布式事务的协议，资源锁在数据库层面导致性能较差，而支付宝作为布道师引入的 TCC 模式需要大量的业务代码保证，开发维护成本较高。
@@ -32,7 +30,14 @@ RPC 请求过程分为调用方与被调用方两部分，我们将 XID 在请�
 
 ### Fescar 与 Spring Cloud Alibaba 集成部分源码解析 
 
-本部分源码全部来自于 spring-cloud-alibaba-fescar. 源码解析部分主要包括 微服务被调用方 和 微服务调用方两大部分，每部分又会穿插 autoconfig 的分析，对于微服务调用方方式具体分为 RestTemplate 和 Feign，对于 Feign 请求方式又结合 Hystrix 和 Sentinel 使用模式。
+本部分源码全部来自于 spring-cloud-alibaba-fescar. 源码解析部分主要包括AutoConfiguration、微服务被调用方和微服务调用方三大部分。对于微服务调用方方式具体分为 RestTemplate 和 Feign，对于 Feign 请求方式又结合 Hystrix 和 Sentinel 使用模式。
+
+#### Fescar AutoConfiguration
+对于 AutoConfiguration 部分的解析此处只介绍与 Fescar 启动相关的部分，其他部分的解析将穿插于【微服务被调用方】和【微服务调用】方章节介绍。
+
+Fescar 的启动需要配置 GlobalTransactionScanner，GlobalTransactionScanner 负责初始化 Fescar 的 RM client、TM  client 和 自动代理标注 GlobalTransactional 注解的类。GlobalTransactionScanner bean 的启动通过 GlobalTransactionAutoConfiguration autoconfig 注入 FescarProperties。   
+FescarProperties 包含了 Fescar的重要属性 txServiceGroup ，此属性的可通过 application.properties 文件中的 key: spring.cloud.alibaba.fescar.txServiceGroup 读取，默认值为 ${spring.application.name}-fescar-service-group 。txServiceGroup 表示Fescar 的逻辑事务分组名，此分组名通过配置中心（目前支持文件、Apollo）获取逻辑事务分组名对应的 TC 集群名称，进一步通过集群名称构造出 TC 集群的服务名，通过注册中心（目前支持nacos、redis、zk和eureka）和服务名找到可用的 TC 服务节点，然后 RM client、TM  client 与 TC 进行 rpc 交互。
+
 #### 微服务被调用方
 
 由于调用方的逻辑比较多一点，我们先分析被调用方的逻辑。针对于 Spring Cloud 项目，默认采用的 RPC 传输协议时 HTTP 协议，所以使用了 HandlerInterceptor 机制来对HTTP的请求做拦截。
@@ -519,9 +524,6 @@ public class FescarHystrixAutoConfiguration {
 
 }
 ```
-#### Fescar 启动配置
-
-Fescar 的启动需要配置 GlobalTransactionScanner，GlobalTransactionScanner 负责初始化 Fescar 的 RM client、TM  client 和 自动代理标注 GlobalTransactional 注解的类。GlobalTransactionScanner bean 的启动通过 GlobalTransactionAutoConfiguration autoconfig 注入 FescarProperties。FescarProperties 包含了 Fescar的重要属性 txServiceGroup ，此属性的可通过 application.properties 文件中的 key: spring.cloud.alibaba.fescar.txServiceGroup 读取，默认值为 ${spring.application.name}-fescar-service-group 。txServiceGroup 表示Fescar 的逻辑事务分组名，此分组名通过配置中心（目前支持文件、Apollo）获取逻辑事务分组名对应的 TC 集群名称，进一步通过集群名称构造出 TC 集群的服务名，通过注册中心（目前支持nacos、redis、zk和eureka）和服务名 找到可用的 TC 服务节点，然后 RM client、TM  client 与 TC 进行 rpc 交互。
 
 ### 参考文献
 
@@ -534,6 +536,6 @@ Fescar 的启动需要配置 GlobalTransactionScanner，GlobalTransactionScanner
  ### 本文作者
  
   郭树抗，社区昵称 ywind，曾就职于华为终端云，现搜狐智能媒体中心Java工程师，目前主要负责搜狐号相关开发，对分布式事务、分布式系统和微服务架构有异常浓厚的兴趣。  
-  清铭，社区昵称 slievrly，Fescar 开源项目发起人，阿里巴巴中件间 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
+  季敏(清铭)，社区昵称 slievrly，Fescar 开源项目发起人，阿里巴巴中件间 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
 
 
