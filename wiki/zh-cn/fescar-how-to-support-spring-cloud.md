@@ -1,7 +1,5 @@
 # Fescar 与 Spring Cloud 集成源码深度剖析
 
-最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以借此机会分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
-
 ### Fescar 简介
 
 常见的分布式事务方式有基于 2PC 的 XA (e.g. atomikos)，从业务层入手的 TCC( e.g. byteTCC)、事务消息 ( e.g. RocketMQ Half Message) 等等。XA 是需要本地数据库支持的分布式事务的协议，资源锁在数据库层面导致性能较差，而支付宝作为布道师引入的 TCC 模式需要大量的业务代码保证，开发维护成本较高。
