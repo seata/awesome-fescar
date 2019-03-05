@@ -1,13 +1,4 @@
----
-title: Fescar在SpringCloud中事务传播源码分析
-author: [Ywind](https://icoding.live/) 
-date: 2019-02-25 19:05:46
-keywords: 
-- Java
-- Spring Cloud
-- Distributed Transaction
-- Fescar
----
+# Spring Cloud 与 Fescar 集成源码深度剖析
 
 最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star ⭐。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
 
@@ -528,7 +519,7 @@ public class FescarHystrixAutoConfiguration {
 
 }
 ```
-### Fescar 启动
+#### Fescar 启动配置
 
 ### 参考文献
 
