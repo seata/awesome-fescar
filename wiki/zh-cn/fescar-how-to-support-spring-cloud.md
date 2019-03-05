@@ -1,6 +1,6 @@
 # Fescar 与 Spring Cloud 集成源码深度剖析
 
-最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star ⭐。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
+最近一直比较关注分布式事务相关的内容，恰好阿里开源了 GTS 的开源实现 [Fescar](https://github.com/alibaba/fescar/) 。阿里的背书是 Java 届非常认可的，所以项目本身短短时间便收到了将近 6k 的 star。抱着学习的心态对它的原理进行了解，同时因为现在的微服务框架 Spring Cloud 大行其道，所以借此机会分析下 Fescar 整合 Spring Cloud 部分的源码机制。 
 
 ### Fescar 简介
 
@@ -536,6 +536,6 @@ public class FescarHystrixAutoConfiguration {
  ### 本文作者
  
   郭树抗，社区昵称 ywind，曾就职于华为终端云，现搜狐智能媒体中心Java工程师，目前主要负责搜狐号相关开发，对分布式事务、分布式系统和微服务架构有异常浓厚的兴趣。  
-  季敏(清铭)，社区昵称 slievrly，Fescar 开源项目发起人，阿里巴巴中件间 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
+  季敏(清铭)，社区昵称 slievrly，Fescar 开源项目负责人，阿里巴巴中件间 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
 
 
