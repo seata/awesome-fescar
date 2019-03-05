@@ -521,6 +521,8 @@ public class FescarHystrixAutoConfiguration {
 ```
 #### Fescar 启动配置
 
+//
+
 ### 参考文献
 
 - Fescar: https://github.com/alibaba/fescar
@@ -529,8 +531,9 @@ public class FescarHystrixAutoConfiguration {
 
 - spring-cloud-openfeign: https://github.com/spring-cloud/spring-cloud-openfeign
 
- 本文作者
+ ### 本文作者
  
-  郭树抗，GitHub ID ywind，曾就职于华为终端云，现搜狐智能媒体中心Java工程师，目前主要负责搜狐号相关开发
-  
+  郭树抗，GitHub ID ywind，曾就职于华为终端云，现搜狐智能媒体中心Java工程师，目前主要负责搜狐号相关开发。   
+  清铭，社区昵称 slievrly，Fescar 开源项目发起人，阿里巴巴中件间 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
+
 
