@@ -43,7 +43,6 @@ fescar：https://github.com/alibaba/fescar
 -   common ：公共组件，提供常用辅助类，静态变量、扩展机制类加载器、以及定义全局的异常等
 -   config : 配置加载解析模块，提供了配置的基础接口，目前只有文件配置实现，后续会有nacos等配置中心的实现
 -   core : 核心模块主要封装了TM、RM和TC通讯用RPC相关内容
--   distrbution ：这个模块目前是空的，distrbution是高性能的队列，后期应该应用于事务日志的落地
 -   dubbo ：dubbo模块主要适配dubbo通讯框架，使用dubbo的filter机制来传统全局事务的信息到分支
 -   examples ：简单的演示实例模块，等下从这个模块入手探索
 -   rm-datasource :资源管理模块，比较核心的一个模块，个人认为这个模块命名为core要更合理一点。代理了JDBC的一些类，用来解析sql生成回滚日志、协调管理本地事务
