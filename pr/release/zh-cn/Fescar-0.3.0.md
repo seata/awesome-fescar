@@ -7,7 +7,7 @@ Fescar 是一款开源的分布式事务解决方案，提供高性能和简单�
 ## 特性
 
 - [[#510](https://github.com/alibaba/fescar/pull/510)] 新增 eureka 注册中心支持
-- [[#498](https://github.com/alibaba/fescar/pull/498)] 实现带全局锁的本地事务模式作为对了解一定原理的开发者高阶使用方式并解决本地事务隔离性问题   
+- [[#498](https://github.com/alibaba/fescar/pull/498)] 实现带全局锁的本地事务模式并解决本地事务隔离性问题   
 
 ## Bug 修复
 
