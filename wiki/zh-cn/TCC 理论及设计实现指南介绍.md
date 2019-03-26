@@ -63,7 +63,7 @@ TCC 的 Try 操作作为一阶段，负责资源的检查和预留；Confirm 操
 
 在一阶段 Try 操作中，分布式事务 T1 和分布式事务 T2 分别冻结资金的那一部分资金，相互之间无干扰；这样在分布式事务的二阶段，无论 T1 是提交还是回滚，都不会对 T2 产生影响，这样 T1 和 T2 在同一笔业务数据上并行执行。
 
-![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682217-6d261131-5d87-4821-b982-83a8bba86df1.png#align=left&display=inline&height=254&name=image.png&originHeight=302&originWidth=738&size=39661&status=done&width=620)**<br />
+![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682217-6d261131-5d87-4821-b982-83a8bba86df1.png#align=left&display=inline&height=254&name=image.png&originHeight=302&originWidth=738&size=39661&status=done&width=620) <br />
 
 <a name="e945e352"></a>
 
