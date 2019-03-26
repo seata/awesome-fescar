@@ -29,7 +29,7 @@ TCC 的 Try 操作作为一阶段，负责资源的检查和预留；Confirm 操
 用户在接入 TCC 时，大部分工作都集中在如何实现 TCC 服务上，进过蚂蚁金服多年的 TCC 应用，总结如下主要的TCC 设计和实现主要事项：
 
 <a name="4226dc7c"></a>
-#### 1、业务操作分两阶段完成
+#### 1、**业务操作分两阶段完成**
 
 接入 TCC 前，业务操作只需要一步就能完成，但是在接入 TCC 之后，需要考虑如何将其分成 2 阶段完成，把资源的检查和预留放在一阶段的 Try 操作中进行，把真正的业务操作的执行放在二阶段的 Confirm 操作中进行。
 
@@ -63,8 +63,10 @@ TCC 的 Try 操作作为一阶段，负责资源的检查和预留；Confirm 操
 
 在一阶段 Try 操作中，分布式事务 T1 和分布式事务 T2 分别冻结资金的那一部分资金，相互之间无干扰；这样在分布式事务的二阶段，无论 T1 是提交还是回滚，都不会对 T2 产生影响，这样 T1 和 T2 在同一笔业务数据上并行执行。
 
-**![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682217-6d261131-5d87-4821-b982-83a8bba86df1.png#align=left&display=inline&height=254&name=image.png&originHeight=302&originWidth=738&size=39661&status=done&width=620)**<br />**
+![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682217-6d261131-5d87-4821-b982-83a8bba86df1.png#align=left&display=inline&height=254&name=image.png&originHeight=302&originWidth=738&size=39661&status=done&width=620)**<br />
+
 <a name="e945e352"></a>
+
 #### 3、**允许空回滚**
 **如下图所示，事务协调器在调用 TCC 服务的一阶段 Try 操作时，可能会出现因为丢包而导致的网络超时，此时事务管理器会触发二阶段回滚，调用 TCC 服务的 Cancel 操作，而 Cancel 操作调用未出现超时。
 
