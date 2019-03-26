@@ -21,7 +21,7 @@ TCC 的 Try 操作作为一阶段，负责资源的检查和预留；Confirm 操
 
 如下图所示，用户实现 TCC 服务之后，该 TCC 服务将作为分布式事务的其中一个资源，参与到整个分布式事务中；事务管理器分 2 阶段协调 TCC 服务，在第一阶段调用所有 TCC 服务的 Try 方法，在第二阶段执行所有 TCC 服务的 Confirm 或者 Cancel 方法；最终所有 TCC 服务要么全部都是提交的，要么全部都是回滚的。
 
-![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682228-dc804f3d-9f39-415a-baca-3f183ada0dc5.png?x-oss-process=image/resize,w_1110)
+![image.png](https://cdn.nlark.com/yuque/0/2019/png/226702/1553570682228-dc804f3d-9f39-415a-baca-3f183ada0dc5.png#align=left&display=inline&height=334&name=image.png&originHeight=872&originWidth=1448&size=149406&status=done&width=555)
 
 <a name="48153343"></a>
 ### 二、TCC 设计
