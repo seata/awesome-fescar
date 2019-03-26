@@ -1,10 +1,9 @@
+---
 title:TCC 理论及设计实现指南介绍
-
 author: zhangthen
-
 keywords: 分布式事务、TCC、roadmap
-
 date:2019/03/26
+---
 
 # TCC 理论及设计实现指南介绍
 
