@@ -1,4 +1,4 @@
-# TCC 理论及设计实现指南介绍
+# TCC介绍及设计实现指南
 
 Fescar 0.4.0 版本发布了 TCC 模式，由蚂蚁金服团队贡献，欢迎大家试用，<br />Sample 地址：[https://github.com/fescar-group/fescar-samples/tree/master/tcc](https://github.com/fescar-group/fescar-samples/tree/master/tcc)，<br />文末也提供了项目后续的 Roadmap，欢迎关注。
 
