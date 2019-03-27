@@ -1,6 +1,6 @@
 ---
 title: TCC适用模型与适用场景分析
-author:  
+author:  alipay
 date: 2019/03/27
 keywords: fescar、分布式事务、TCC、roadmap
 ---
