@@ -40,7 +40,8 @@ Seata-Server整体的模块图如上所示:
 
 首先来讲讲比较基础的Discover模块，又称服务注册/发现模块。我们将Seata-Sever启动之后，需要将自己的地址暴露给其他使用者，那么就需要我们这个模块帮忙。
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f28b0f59eaaf1?w=583&h=409&f=png&s=47095)
+![](../../img/seata-server/discover.png)
+
 这个模块有个核心接口RegistryService，如上图所示:
 - register：服务端使用，进行服务注册。
 - unregister：服务端使用，一般在JVM关闭钩子，ShutdownHook中调用。
@@ -52,7 +53,7 @@ Seata-Server整体的模块图如上所示:
 如果需要添加自己定义的服务注册/发现，那么实现这个接口即可。截止目前在社区的不断开发推动下，已经有四种服务注册/发现，分别是redis,zk,nacos,eruka。下面简单介绍下Nacos的实现：
 
 #### 2.2.1 register接口：
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f297ec2f8c321?w=702&h=117&f=png&s=25231)
+![](../../img/seata-server/lookup.png)
 
 step1:校验地址是否合法
 
@@ -62,7 +63,7 @@ unregister接口类似，这里不做详解。
 
 #### 2.2.2 lookup接口：
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f2a1d9e6aac07?w=890&h=652&f=png&s=138163)
+![](../../img/seata-server/register.png)
 
 step1：获取当前clusterName名字
 
@@ -74,7 +75,7 @@ step4：将我们事件变动的Listener注册到Nacos
 
 #### 2.2.3 subscribe接口
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f2eab4157049e?w=712&h=143&f=png&s=36154)
+![](../../img/seata-server/subscribe.png)
 这个接口比较简单，具体分两步:
 
 step1：将clstuer和listener添加进map中。
