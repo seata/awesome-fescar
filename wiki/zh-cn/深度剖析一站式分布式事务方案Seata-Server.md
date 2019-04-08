@@ -76,6 +76,7 @@ step4：将我们事件变动的Listener注册到Nacos
 #### 2.2.3 subscribe接口
 
 ![](../../img/seata-server/subscribe.png)
+
 这个接口比较简单，具体分两步:
 
 step1：将clstuer和listener添加进map中。
