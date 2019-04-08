@@ -87,7 +87,7 @@ step2：向Nacos注册。
 
 同样的在Seata中也提供了一个接口Configuration，用来自定义我们需要的获取配置的地方:
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f2f5b1e3e8abf?w=735&h=403&f=png&s=56750)
+![](../../img/seata-server/config.png)
 
 - getInt/Long/Boolean/Config()：通过dataId来获取对应的值。
 - putConfig：用于添加配置。
@@ -103,7 +103,7 @@ step2：向Nacos注册。
 
 在FileTransactionStoreManager#writeSession代码中:
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f3074b87a3b17?w=876&h=258&f=png&s=48170)
+![](../../img/seata-server/store.png)
 
 上面的代码主要分为下面几步：
 - step1：生成一个TransactionWriteFuture。
@@ -112,11 +112,12 @@ step2：向Nacos注册。
 
 我们将数据提交到队列之后，我们接下来需要对其进行消费，代码如下：
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f322df805ae66?w=719&h=101&f=png&s=30648)
+![](../../img/seata-server/storewrite.png)
 
 这里将一个WriteDataFileRunnable()提交进我们的线程池，这个Runnable的run()方法如下:
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f325217d363f7?w=855&h=526&f=png&s=82521)
+![](../../img/seata-server/storerun.png)
+
 分为下面几步:
 
 step1： 判断是否停止，如果stopping为true则返回null。
@@ -131,14 +132,15 @@ step5：当写入数量到达一定的时候，或者写入时间到达一定的
 
 在我们的writeDataFile中有如下代码:
 
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f32de2db7bda4?w=748&h=557&f=png&s=82158)
+![](../../img/seata-server/writedatafile.png)
 
 step1：首先获取我们的ByteBuffer，如果超出最大循环BufferSize就直接创建一个新的，否则就使用我们缓存的Buffer。这一步可以很大的减少GC。
 
 step2：然后将数据添加进入ByteBuffer。
 
 step3：最后将ByteBuffer写入我们的fileChannel,这里会重试三次。此时的数据还在pageCache层，受两方面的影响，OS有自己的刷新策略，但是这个业务程序不能控制，为了防止宕机等事件出现造成大量数据丢失，所以就需要业务自己控制flush。下面是flush的代码:
-![](https://user-gold-cdn.xitu.io/2019/4/6/169f3334dea4db3e?w=868&h=273&f=png&s=46756)
+
+![](../../img/seata-server/flush.png)
 
 这里flush的条件写入一定数量或者写的时间超过一定时间，这样也会有个小问题如果是停电，那么pageCache中有可能还有数据并没有被刷盘，会导致少量的数据丢失。目前还不支持同步模式，也就是每条数据都需要做刷盘操作，这样可以保证每条消息都落盘，但是性能也会受到极大的影响，当然后续会不断的演进支持。
 
@@ -148,14 +150,15 @@ step3：最后将ByteBuffer写入我们的fileChannel,这里会重试三次。�
 大家知道数据库实现隔离级别主要是通过锁来实现的，同样的再分布式事务框架Seata中要实现隔离级别也需要通过锁。一般在数据库中数据库的隔离级别一共有四种:读未提交，读已提交，可重复读，串行化。在Seata中可以保证隔离级别是读已提交，但是提供了达到读已提交隔离的手段。
 
 Lock模块也就是Seata实现隔离级别的核心模块。在Lock模块中提供了一个接口用于管理我们的锁:
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f3a24136d46ee?w=759&h=368&f=png&s=44455)
+![](../../img/seata-server/lockManager.png)
 
 其中有三个方法:
 - acquireLock：用于对我们的BranchSession加锁，这里虽然是传的分支事务Session，实际上是对分支事务的资源加锁，成功返回true。
 - isLockable：根据事务ID，资源Id，锁住的Key来查询是否已经加锁。
 - cleanAllLocks：清除所有的锁。
 对于锁我们可以在本地实现，也可以通过redis或者mysql来帮助我们实现。官方默认提供了本地全局锁的实现：
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f3a74b89488cf?w=887&h=223&f=png&s=38735)
+![](../../img/seata-server/defaultLock.png)
+
 在本地锁的实现中有两个常量需要关注:
 - BUCKET_PER_TABLE：用来定义每个table有多少个bucket，目的是为了后续对同一个表加锁的时候减少竞争。
 - LOCK_MAP：这个map从定义上来看非常复杂，里里外外套了很多层Map，这里用个表格具体说明一下：
@@ -172,18 +175,18 @@ Lock模块也就是Seata实现隔离级别的核心模块。在Lock模块中提�
 ## 2.6 Rpc
 保证Seata高性能的关键之一也是使用了Netty作为RPC框架，采用默认配置的线程模型如下图所示：
 
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f7e02900e8ac0?w=1019&h=379&f=png&s=52614)
+![](../../img/seata-server/reactor.png)
 
 如果采用默认的基本配置那么会有一个Acceptor线程用于处理客户端的链接，会有cpu*2数量的NIO-Thread，再这个线程中不会做业务太重的事情，只会做一些速度比较快的事情，比如编解码，心跳事件，和TM注册。一些比较费时间的业务操作将会交给业务线程池，默认情况下业务线程池配置为最小线程为100，最大为500。
 
 这里需要提一下的是Seata的心跳机制，这里是使用Netty的IdleStateHandler完成的，如下:
 
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f7e9e9e849640?w=885&h=53&f=png&s=11298)
+![](../../img/seata-server/idleStateHandler.png)
 
 在Sever端对于写没有设置最大空闲时间，对于读设置了最大空闲时间，默认为15s，如果超过15s则会将链接断开，关闭资源。
 
 
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f7ec1a9d61d3e?w=656&h=326&f=png&s=52151)
+![](../../img/seata-server/userEventTriggered.png)
 
 step1：判断是否是读空闲的检测事件。
 
@@ -191,7 +194,7 @@ step2：如果是则断开链接，关闭资源。
 
 ## 2.7 HA-Cluster
 目前官方没有公布HA-Cluster,但是通过一些其他中间件和官方的一些透露，可以将HA-Cluster用如下方式设计:
-![](https://user-gold-cdn.xitu.io/2019/4/7/169f81fbf55dc7f1?w=1085&h=622&f=png&s=56376)
+![](../../img/seata-server/hacluster.png)
 
 具体的流程如下:
 
