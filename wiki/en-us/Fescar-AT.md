@@ -160,7 +160,7 @@ Got the after image:
 ```
 
 6. Before local commit, the transaction submmit an application to TC to acquire a **global lock** for the record whose primary key equals 1 in the table product. 
-7. Commit local transaction: commit the update of PRODCT table and the insert of UNDO_LOG table in the same local transaction.
+7. Commit local transaction: commit the update of PRODUCT table and the insert of UNDO_LOG table in the same local transaction.
 8. Report the result of step 7 to TC.
 
 ## Phase 2 - Rollback case
