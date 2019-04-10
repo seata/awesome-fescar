@@ -78,7 +78,7 @@ step3：如果没有订阅先主动查询一次服务实例列表，然后添加
 
 这个接口比较简单，具体分两步:
 
-step1：将将要订阅的cluster-> listener 存放到map中，此处nacos未提交单机已订阅列表，所以需要自己实现。
+step1：对将要订阅的cluster-> listener 存放到map中，此处nacos未提交单机已订阅列表，所以需要自己实现。
 
 step2：使用Nacos api 订阅。
 ## 2.3 Config
@@ -195,11 +195,14 @@ step2：如果是则断开链接，关闭资源。
 另外Seata 做了内存池、客户端做了批量小包合并发送、Netty连接池（减少连接创建时的服务不可用时间）等功能，以下为批量小包合并功能。   
 
 ![](../../img/seata-server/send.png)   
-客户端的消息发送并不是真正的消息发送通过AbstractRpcRemoting#sendAsyncRequest 包装成RpcMessage存储至basket中并唤醒合并发送线程。合并发送线程通过while true的形式
-最长等待1ms对basket的消息取出包装成merge消息进行真正发送，此时若channel出现异常则会通过fail-fast快速失败返回结果。merge消息发送前在map中标识，收到结果后批量确认（AbstractRpcRemotingClient#channelRead），并通过dispatch分发至messageListener和handler去处理。同时，timerExecutor定时对已发送
+客户端的消息发送并不是真正的消息发送通过 AbstractRpcRemoting#sendAsyncRequest 包装成 RpcMessage 存储至 basket 中并唤醒合并发送线程。合并发送线程通过 while true 的形式
+最长等待1ms对basket的消息取出包装成 merge 消息进行真正发送，此时若 channel 出现异常则会通过 fail-fast 快速失败返回结果。merge消息发送前在 map 中标识，收到结果后批量确认（AbstractRpcRemotingClient#channelRead），并通过 dispatch 分发至 messageListener 和 handler 去处理。同时，timerExecutor 定时对已发送
 消息进行超时检测，若超时置为失败。具体消息协议设计将会在后续的文章中给出，敬请关注。   
-Seata 的Netty Client由TMClient和RMClient组成，根据事务角色功能区分，都继承AbstractRpcRemotingClient，AbstractRpcRemotingClient实现了RemotingService（服务启停）, RegisterMsgListener（netty 连接池连接创建回调）和 ClientMessageSender（消息发送）继承了AbstractRpcRemoting（Client和Server顶层消息发送和处理的模板）。TMClient和RMClient 又会根据自身的poolConfig配置与NettyPoolableFactory implements KeyedPoolableObjectFactory<NettyPoolKey, Channel> 进行channel连接的交互，channel连接池根据角色key+ip作为连接池的key来定位各个连接池
-，连接池对channel进行统一的管理。TMClient和RMClient在发送过程中对于每个ip只会使用一个长连接，但连接不可用时，会从连接池中快速取出已经创建好并可用的连接，减少服务的不可用时间。
+Seata 的 Netty Client由 TMClient和RMClient 组成，根据事务角色功能区分，都继承 AbstractRpcRemotingClient，AbstractRpcRemotingClient 实现了 RemotingService（服务启停）, RegisterMsgListener（netty 连接池连接创建回调）和 ClientMessageSender（消息发送）继承了 AbstractRpcRemoting（ Client和Server 顶层消息发送和处理的模板）。    
+RMClient类关系图如下图所示：
+![](../../img/seata-server/class.png)
+TMClient 和 RMClient 又会根据自身的 poolConfig 配置与 NettyPoolableFactory implements KeyedPoolableObjectFactory<NettyPoolKey, Channel> 进行 channel 连接的交互，channel 连接池根据角色 key+ip 作为连接池的 key 来定位各个连接池
+，连接池对 channel 进行统一的管理。TMClient 和 RMClient 在发送过程中对于每个 ip 只会使用一个长连接，但连接不可用时，会从连接池中快速取出已经创建好并可用的连接，减少服务的不可用时间。
 
 ## 2.7 HA-Cluster
 目前官方没有公布HA-Cluster,但是通过一些其它中间件和官方的一些透露，可以将HA-Cluster用如下方式设计:
@@ -261,7 +264,7 @@ step3：开启Globalsession
 
 这一步会把状态变为Begin,记录开始时间,并且调用RootSessionManager的onBegin监听方法，将Session保存到map并写入到我们的文件。
 
-step4：最后返回XID，这个XID是由ip+port+transactionId组成的，非常重要，当TM申请到之后需要将这个ID传到RM中，RM通过XID来决定到底应该访问哪一台Server。
+step4：最后返回XID，这个XID是由 ip+port+transactionId 组成的，非常重要，当TM申请到之后需要将这个ID传到RM中，RM通过XID来决定到底应该访问哪一台Server。
 
 ## 3.3 BranchRegister-分支事务注册
 当我们全局事务在TM开启之后，我们RM的分支事务也需要注册到我们的全局事务之上，这里看看是如何处理的：
@@ -316,4 +319,9 @@ step6：遍历我们的BranchSession进行提交，如果某个分支事务失�
 
 最后希望大家能从这篇文章能了解Seata-Server的核心设计原理，当然你也可以想象如果你自己去实现一个分布式事务的Server应该怎样去设计？
 
-Seata github地址：https://github.com/seata/seata
+Seata GitHub地址：https://github.com/seata/seata   
+
+本文作者：
+
+李钊，GitHub ID @CoffeeLatte007，公众号「咖啡拿铁」作者，Seata社区 Committer，猿辅导Java工程师，曾就职于美团。对分布式中间件，分布式系统有浓厚的兴趣。   
+季敏(清铭)，GitHub ID @slievrly，Seata 开源项目负责人，阿里巴巴中间件 TXC/GTS 核心研发成员，长期从事于分布式中间件核心研发工作，在分布式事务领域有着较丰富的技术积累。
