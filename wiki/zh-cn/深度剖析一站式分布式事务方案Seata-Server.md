@@ -193,7 +193,7 @@ step1：判断是否是读空闲的检测事件。
 
 step2：如果是则断开链接，关闭资源。   
 另外Seata 做了内存池、客户端做了批量小包合并发送、Netty连接池（减少连接创建时的服务不可用时间）等功能，以下为批量小包合并功能。   
-<img src="../../img/seata-server/send.png"  height="750" width="650">      
+<img src="../../img/seata-server/send.png"  height="700" width="650">      
 客户端的消息发送并不是真正的消息发送通过 AbstractRpcRemoting#sendAsyncRequest 包装成 RpcMessage 存储至 basket 中并唤醒合并发送线程。合并发送线程通过 while true 的形式
 最长等待1ms对basket的消息取出包装成 merge 消息进行真正发送，此时若 channel 出现异常则会通过 fail-fast 快速失败返回结果。merge消息发送前在 map 中标识，收到结果后批量确认（AbstractRpcRemotingClient#channelRead），并通过 dispatch 分发至 messageListener 和 handler 去处理。同时，timerExecutor 定时对已发送
 消息进行超时检测，若超时置为失败。具体消息协议设计将会在后续的文章中给出，敬请关注。   
