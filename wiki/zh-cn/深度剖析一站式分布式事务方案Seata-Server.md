@@ -179,7 +179,7 @@ Lock模块也就是Seata实现隔离级别的核心模块。在Lock模块中提�
 如果采用默认的基本配置那么会有一个Acceptor线程用于处理客户端的链接，会有cpu*2数量的NIO-Thread，再这个线程中不会做业务太重的事情，只会做一些速度比较快的事情，比如编解码，心跳事件，和TM注册。一些比较费时间的业务操作将会交给业务线程池，默认情况下业务线程池配置为最小线程为100，最大为500。
 
 Seata 目前允许配置的传输层配置如图所示，用户可根据需要进行Netty传输层面的调优，配置通过配置中心配置，首次加载时生效。  
-<img src="../../img/seata-server/transport.png"  height="400" width="680">    
+<img src="../../img/seata-server/transport.png"  height="400" width="650">    
 这里需要提一下的是Seata的心跳机制，这里是使用Netty的IdleStateHandler完成的，如下:
 
 ![](../../img/seata-server/idleStateHandler.png)
@@ -193,7 +193,7 @@ step1：判断是否是读空闲的检测事件。
 
 step2：如果是则断开链接，关闭资源。   
 另外Seata 做了内存池、客户端做了批量小包合并发送、Netty连接池（减少连接创建时的服务不可用时间）等功能，以下为批量小包合并功能。   
-<img src="../../img/seata-server/send.png"  height="900" width="680">    
+<img src="../../img/seata-server/send.png"  height="800" width="650">    
 ![](../../img/seata-server/send.png)   
 客户端的消息发送并不是真正的消息发送通过 AbstractRpcRemoting#sendAsyncRequest 包装成 RpcMessage 存储至 basket 中并唤醒合并发送线程。合并发送线程通过 while true 的形式
 最长等待1ms对basket的消息取出包装成 merge 消息进行真正发送，此时若 channel 出现异常则会通过 fail-fast 快速失败返回结果。merge消息发送前在 map 中标识，收到结果后批量确认（AbstractRpcRemotingClient#channelRead），并通过 dispatch 分发至 messageListener 和 handler 去处理。同时，timerExecutor 定时对已发送
