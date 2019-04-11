@@ -1,5 +1,4 @@
-
-
+# 1.前言
 针对Fescar 相信很多开发者已经对他并不陌生，当然Fescar 已经成为了过去时，为什么说它是过去时，因为Fescar 已经华丽的变身为Seata。如果还不知道Seata 的朋友，请登录下面网址查看。
 
  
@@ -9,7 +8,7 @@
 
 今天在这里和大家分享下Spring Cloud 整合Seata 的相关心得。也让更多的朋友在搭建的道路上少走一些弯路，少踩一些坑。
 
-言归正传：上代码
+# 2.工程内容
 
 本次搭建流程为：client->网关->服务消费者->服务提供者.
 
@@ -21,7 +20,7 @@
 
                                 fescar-server0.4.1(Seata)
 
-关于nacos的启动方式请参考：Nacos启动参考       
+关于nacos的启动方式请参考：[Nacos启动参考](https://nacos.io/zh-cn/docs/quick-start.html)       
 
 首先seata支持很多种注册服务方式，在 fescar-server-0.4.1\conf 目录下
 
@@ -40,6 +39,8 @@
 每个人项目的实际情况，这里我选用的是nacos，eureka的也是可以的，我这边分别对这两个版本进行整合测试均可以通过。
 
 注：如果整合eureka请选用官方最新版本。
+
+# 3.核心配置
 ```java
 registry {
   # file 、nacos 、eureka、redis、zk
@@ -99,9 +100,9 @@ SEATA的启动方式参考官方： 注意，这里需要说明下，命令启�
 ```java
 sh fescar-server.sh 8091 /home/admin/fescar/data/ IP（可选）
 ```
- 接下来我们看下核心代码部分
 
-首先上面提到过，在我们的代码中也是需要file.conf 和registry.conf 这里着重的地方要说的是file.conf,file.conf只有当registry中 配置file的时候才会进行加载，如果采用ZK、nacos、作为配置中心，可以忽略。因为type指定其他是不加载file.conf的，但是对应的 service.localRgroup.grouplist  和 service.vgroup_mapping  需要在支持配置中心 进行指定，这样你的client 在启动后会通过自动从配置中心获取对应的 SEATA 服务 和地址。如果不配置会出现无法连接server的错误。当然如果你采用的eureka在config的地方就需要采用type="file" 目前SEATA config暂时不支持eureka的形势
+
+上面提到过，在我们的代码中也是需要file.conf 和registry.conf 这里着重的地方要说的是file.conf,file.conf只有当registry中 配置file的时候才会进行加载，如果采用ZK、nacos、作为配置中心，可以忽略。因为type指定其他是不加载file.conf的，但是对应的 service.localRgroup.grouplist  和 service.vgroup_mapping  需要在支持配置中心 进行指定，这样你的client 在启动后会通过自动从配置中心获取对应的 SEATA 服务 和地址。如果不配置会出现无法连接server的错误。当然如果你采用的eureka在config的地方就需要采用type="file" 目前SEATA config暂时不支持eureka的形势
 ```java
 transport {
   # tcp udt unix-domain-socket
@@ -144,6 +145,8 @@ client {
   }
 }
 ```
+
+# 4.服务相关
  这里有两个地方需要注意
 ```java
     grouplist IP，这里是当前fescar-sever的IP端口，
@@ -158,7 +161,7 @@ client {
 同理无论是provider 还是consumer 都需要这两个文件进行配置。
 
 如果你采用nacos做配置中心，需要在nacos通过添加配置方式进行配置添加。
-
+# 5.事务使用
 我这里的代码逻辑是请求通过网关进行负载转发到我的consumer上，在consumer 中通过fegin进行provider请求。官方的例子中是通过fegin进行的，而我们这边直接通过网关转发，所以全局事务同官方的demo一样 也都是在controller层。
 ```java
 @RestController
@@ -194,7 +197,7 @@ public class DemoController {
 到此为止核心的事务整合基本到此结束了，我这里是针对A,B 两个provider进行调用，当B发生报错后，进行全局事务回滚。当然每个事务内部都可以通过自己的独立本地事务去处理自己本地事务方式。
 
 SEATA是通过全局的XID方式进行事务统一标识方式。这里就不列出SEATA需要用的数据库表。具体参考：[spring-cloud-fescar 官方DEMO](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/fescar-example)
-
+# 5.数据代理
 
 这里还有一个重要的说明就是，在分库服务的情况下，每一个数据库内都需要有一个undo_log的数据库表进行XID统一存储处理。
 
@@ -232,4 +235,5 @@ public class DatabaseConfiguration {
 大家要注意的就是配置文件和数据代理。如果没有进行数据源代理，undo_log是无数据的，也就是没办进行XID的管理。
 
  
+本文作者：大菲.Fei
 
