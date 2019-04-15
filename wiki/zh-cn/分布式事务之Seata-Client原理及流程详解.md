@@ -42,7 +42,7 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
  - 业务：business-server
  
 项目结构如下图
-![在这里插入图片描述](https://github.com/fescar-group/awesome-fescar/blob/master/img/20190410114411367.png)
+![在这里插入图片描述](https://github.com/fescar-group/awesome-fescar/blob/master/img/20190410114411366.png)
  
 **正常业务**
    1. business发起购买请求
@@ -84,7 +84,7 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	 ```
  3. client
     ```js
-	 client {
+	client {
 	  #RM接收TC的commit通知后缓冲上限
 	  async.commit.buffer.limit = 10000
 	  lock {
@@ -208,17 +208,18 @@ private void initClient() {
 方法中可以看到初始化了`TMClient`和`RMClient`，对于一个服务既可以是TM角色也可以是RM角色，至于什么时候是TM或者RM则要看在一次全局事务中`@GlobalTransactional`注解标注在哪。
 Client创建的结果是与TC的一个Netty连接，所以在启动日志中可以看到两个Netty Channel，其中标明了transactionRole分别为`TMROLE`和`RMROLE`
 ```java
-NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"order-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"transactionServiceGroup":"hello-service-fescar-service-group","typeCode":101,"version":"0.4.0"},"transactionRole":"TMROLE"}
-NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"order-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"resourceIds":"jdbc:mysql://127.0.0.1:3306/db_order?useSSL=false","transactionServiceGroup":"hello-service-fescar-service-group","typeCode":103,"version":"0.4.0"},"transactionRole":"RMROLE"}
-Send:RegisterTMRequest{applicationId='order-service', transactionServiceGroup='hello-service-fescar-service-group'}
-Send:RegisterRMRequest{resourceIds='jdbc:mysql://127.0.0.1:3306/db_order?useSSL=false', applicationId='order-service', transactionServiceGroup='hello-service-fescar-service-group'}
-Receive:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null,messageId:2
-Receive:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null,messageId:1
-com.alibaba.fescar.core.rpc.netty.RmRpcClient@7904cd7c msgId:2, future :com.alibaba.fescar.core.protocol.MessageFuture@4107849f, body:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null
-com.alibaba.fescar.core.rpc.netty.TmRpcClient@68609034 msgId:1, future :com.alibaba.fescar.core.protocol.MessageFuture@527cc144, body:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null
-register success, cost 28 ms, version:0.4.1,role:TMROLE,channel:[id: 0xf45059d4, L:/127.0.0.1:63533 - R:/127.0.0.1:8091]
-register RM success. server version:0.4.1,channel:[id: 0xb7674b6a, L:/127.0.0.1:63534 - R:/127.0.0.1:8091]
-register success, cost 37 ms, version:0.4.1,role:RMROLE,channel:[id: 0xb7674b6a, L:/127.0.0.1:63534 - R:/127.0.0.1:8091]
+2019-04-09 13:42:57.417  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"business-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"transactionServiceGroup":"my_test_tx_group","typeCode":101,"version":"0.4.1"},"transactionRole":"TMROLE"}
+2019-04-09 13:42:57.505  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"business-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"transactionServiceGroup":"my_test_tx_group","typeCode":103,"version":"0.4.1"},"transactionRole":"RMROLE"}
+2019-04-09 13:42:57.629 DEBUG 93715 --- [lector_TMROLE_1] c.a.f.c.rpc.netty.MessageCodecHandler    : Send:RegisterTMRequest{applicationId='business-service', transactionServiceGroup='my_test_tx_group'}
+2019-04-09 13:42:57.629 DEBUG 93715 --- [lector_RMROLE_1] c.a.f.c.rpc.netty.MessageCodecHandler    : Send:RegisterRMRequest{resourceIds='null', applicationId='business-service', transactionServiceGroup='my_test_tx_group'}
+2019-04-09 13:42:57.699 DEBUG 93715 --- [lector_RMROLE_1] c.a.f.c.rpc.netty.MessageCodecHandler    : Receive:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null,messageId:1
+2019-04-09 13:42:57.699 DEBUG 93715 --- [lector_TMROLE_1] c.a.f.c.rpc.netty.MessageCodecHandler    : Receive:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null,messageId:2
+2019-04-09 13:42:57.701 DEBUG 93715 --- [lector_RMROLE_1] c.a.f.c.rpc.netty.AbstractRpcRemoting    : com.alibaba.fescar.core.rpc.netty.RmRpcClient@3b06d101 msgId:1, future :com.alibaba.fescar.core.protocol.MessageFuture@28bb1abd, body:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null
+2019-04-09 13:42:57.701 DEBUG 93715 --- [lector_TMROLE_1] c.a.f.c.rpc.netty.AbstractRpcRemoting    : com.alibaba.fescar.core.rpc.netty.TmRpcClient@65fc3fb7 msgId:2, future :com.alibaba.fescar.core.protocol.MessageFuture@9a1e3df, body:version=0.4.1,extraData=null,identified=true,resultCode=null,msg=null
+2019-04-09 13:42:57.710  INFO 93715 --- [imeoutChecker_1] c.a.fescar.core.rpc.netty.RmRpcClient    : register RM success. server version:0.4.1,channel:[id: 0xe6468995, L:/127.0.0.1:57397 - R:/127.0.0.1:8091]
+2019-04-09 13:42:57.710  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : register success, cost 114 ms, version:0.4.1,role:TMROLE,channel:[id: 0xd22fe0c5, L:/127.0.0.1:57398 - R:/127.0.0.1:8091]
+2019-04-09 13:42:57.711  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : register success, cost 125 ms, version:0.4.1,role:RMROLE,channel:[id: 0xe6468995, L:/127.0.0.1:57397 - R:/127.0.0.1:8091]
+
 ```
 日志中可以看到
 1. 创建Netty连接
