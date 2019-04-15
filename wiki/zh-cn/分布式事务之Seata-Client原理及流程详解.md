@@ -28,7 +28,7 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
     <version>2.1.0.BUILD-SNAPSHOT</version>
 </dependency>
 ```
-该组件实现了基于RestTemplate、Feign通信时的XID传递功能，详细说明见[集成源码深度剖析：Fescar x Spring Cloud](https://blog.csdn.net/yunqiinsight/article/details/88343096),
+该组件实现了基于RestTemplate、Feign通信时的XID传递功能。
 ## 业务逻辑
 业务逻辑是经典的下订单、扣余额、减库存流程。
 根据模块划分为三个独立的服务，且分别连接对应的数据库
@@ -44,12 +44,12 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
 项目结构如下图
 ![在这里插入图片描述](https://github.com/fescar-group/awesome-fescar/blob/master/img/20190410114411367.png)
 业务流程
- - 正常流程
+ * 正常流程
    1.business发起购买请求
    2.storage扣减库存
    3.order创建订单
    4.account扣减余额
- - 异常流程
+ * 异常流程
    1.business发起购买请求
    2.storage扣减库存
    3.order创建订单
@@ -68,7 +68,7 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
  1. transport
      transport部分的配置对应[NettyServerConfig](https://github.com/seata/seata/blob/develop/core/src/main/java/com/alibaba/fescar/core/rpc/netty/NettyServerConfig.java)类，用于定义Netty相关的参数，TM、RM与fescar-server之间使用Netty进行通信
  2. service
-	 ```json
+	 ```js
 	 service {
 	  #vgroup->rgroup
 	  vgroup_mapping.my_test_tx_group = "default"
@@ -82,7 +82,7 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	}
 	 ```
  3. client
-    ```json
+    ```js
 	 client {
 	  #RM接收TC的commit通知后缓冲上限
 	  async.commit.buffer.limit = 10000
