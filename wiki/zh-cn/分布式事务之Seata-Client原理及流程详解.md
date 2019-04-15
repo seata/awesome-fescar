@@ -43,17 +43,18 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
  
 项目结构如下图
 ![在这里插入图片描述](https://github.com/fescar-group/awesome-fescar/blob/master/img/20190410114411367.png)
-业务流程
- * 正常流程
-   1.business发起购买请求
-   2.storage扣减库存
-   3.order创建订单
-   4.account扣减余额
- * 异常流程
-   1.business发起购买请求
-   2.storage扣减库存
-   3.order创建订单
-   4.account`扣减余额异常`
+ 
+**正常业务**
+   1. business发起购买请求
+   2. storage扣减库存
+   3. order创建订单
+   4. account扣减余额
+   
+**异常业务**
+   1. business发起购买请求
+   2. storage扣减库存
+   3. order创建订单
+   4. account`扣减余额异常`
    
 正常流程下2、3、4步的数据正常更新全局commit，异常流程下的数据则由于第4步的异常报错全局回滚。
 
