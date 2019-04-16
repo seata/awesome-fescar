@@ -30,7 +30,9 @@
     nacos-config.text
     registry.conf
 
-总共包含五个文件，file.conf和 registry.conf 分别是我们在 服务消费者 & 服务提供者 代码段需要用到的文件。
+总共包含五个文件，其中 file.conf和 registry.conf 分别是我们在 服务消费者 & 服务提供者 代码段需要用到的文件。
+注：file.conf和 registry.conf 必须在当前使用的应用程序中，即： 服务消费者 & 服务提供者 两个应用在都需要包含。
+    如果你采用了配置中心 是nacos 、zk ，file.cnf 是可以忽略的。但是type=“file” 如果是为file  就必须得用file.cnf
 
 下面是registry.conf 文件中的配置信息，其中 registry 是注册服务中心配置。config为配置中心的配置地方。
 
