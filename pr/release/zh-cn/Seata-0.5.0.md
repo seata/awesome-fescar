@@ -17,7 +17,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#783](https://github.com/seata/seata/pull/783)] 允许用户自定义分支事务记录报告重试次数
 - [[#791](https://github.com/seata/seata/pull/791)] 用状态枚举替换超时状态的模糊判断
 - [[#836](https://github.com/seata/seata/pull/836)] 添加maven插件，管理工程版本号
-- [[#820](https://github.com/seata/seata/pull/820)] 为GlobalTransaction所需的异常添加回滚
+- [[#820](https://github.com/seata/seata/pull/820)] 添加按异常回滚事务的特性
 
 
 ## Bug 修复
