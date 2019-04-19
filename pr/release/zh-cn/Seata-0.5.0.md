@@ -16,15 +16,8 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#774](https://github.com/seata/seata/pull/774)] 优化配置中心和注册中心的结构
 - [[#783](https://github.com/seata/seata/pull/783)] 允许用户自定义分支事务记录报告重试次数
 - [[#791](https://github.com/seata/seata/pull/791)] 用状态枚举替换超时状态的模糊判断
-- [[#801](https://github.com/seata/seata/pull/801)] 补充服务端测试用例
-- [[#822](https://github.com/seata/seata/pull/822)] 补充 MergedWarpMessage 测试用例
-- [[#825](https://github.com/seata/seata/pull/825)] 补充 MergeResultMessage 测试用例
-- [[#826](https://github.com/seata/seata/pull/826)] 补充 RegisterRMRequest 测试用例
-- [[#828](https://github.com/seata/seata/pull/828)] 添加 RPCMessage 协议编码注释，方便理解
-
 
 ## Bug 修复
-
 
 - [[#772](https://github.com/seata/seata/pull/772)] 修复文件配置中心监听器问题
 - [[#807](https://github.com/seata/seata/pull/807)] 优化服务端文件存储器的文件路径
