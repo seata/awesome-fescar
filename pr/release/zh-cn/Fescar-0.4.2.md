@@ -1,4 +1,4 @@
-Alibaba Seata 0.4.2 发布
+Seata 0.4.2 发布
 
 Seata 是一款开源的分布式事务解决方案，提供高性能和简单易用的分布式事务服务。
 
@@ -33,4 +33,4 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 ## 相关链接
 - Seata: https://github.com/seata/seata 
 - Seata-Samples: https://github.com/fescar-group/fescar-samples   
-- Release：https://github.com/alibaba/fescar/releases
+- Release：https://github.com/seata/seata/releases
