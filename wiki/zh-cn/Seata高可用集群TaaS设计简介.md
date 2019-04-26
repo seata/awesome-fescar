@@ -5,8 +5,19 @@ date: 2019/04/23
 keywords: seata、分布式事务、高可用
 ---
 
-# TaaS设计简介
-在Seata 0.5 版本以后，社区推出了高可用的服务端版本 TaaS(Transaction as a Service) ，使用`Golang`开发，由InfiniVision (http://infinivision.cn) 贡献给Seata开源社区。
+# Seata高可用集群TaaS设计简介
+
+### 前言
+TaaS是一个兼容Seata（0.5版本以后）的分布式事务解决方案的高可用的服务端组件，使用`Golang`开发，由InfiniVision (http://infinivision.cn) 贡献给Seata开源社区。
+
+在Seata开源之前，我们内部开始借鉴GTS以及一些开源项目来实现分布式事务的解决方案TaaS(Transaction as a Service)。
+
+在我们完成TaaS的服务端的开发工作后，Seata（当时还叫Fescar）开源了，并且引起了开源社区的广泛关注，加上阿里巴巴的平台影响力以及社区活跃度，我们认为Seata会成为今后开源分布式事务的标准，我们决定TaaS兼容Seata。
+
+在发现Seata的服务端的实现是单机的，高可用等并没有实现，于是我们与Seata社区负责人取得联系，并且决定把TaaS开源，回馈开源社区。
+
+### 开源计划
+TaaS近期就会开源到 github (https://github.com/seata )，敬请期待！
 
 ### 设计原则
 1. 高性能，性能和机器数量成正比，即通过加入新机器到集群中，就可以提升性能
