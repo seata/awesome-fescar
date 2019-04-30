@@ -29,7 +29,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#888](https://github.com/seata/seata/pull/888)] 修复copyright checkstyle验证问题
 - [[#901](https://github.com/seata/seata/pull/901)] 修复Zookeeper 注册时父节点路径不存在问题
 - [[#904](https://github.com/seata/seata/pull/904)] 优化UpdateExecutort后镜像数据查询
-- [[#802](https://github.com/seata/seata/pull/802)] 优化checkstyle
+- [[#802](https://github.com/seata/seata/pull/802)] 优化checkstyle，增加插件校验
 - [[#882](https://github.com/seata/seata/pull/882)] 更改copyright，增加copyright自动插件
 - [[#874](https://github.com/seata/seata/pull/874)] 增加通讯传输层默认配置值
 - [[#866](https://github.com/seata/seata/pull/866)] 修复无法生成dubbo:reference代理类问题
@@ -39,7 +39,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#830](https://github.com/seata/seata/pull/830)] 修复RM延迟注册问题
 - [[#872](https://github.com/seata/seata/pull/872)] 修复RegisterRMRequest解码消息长度校验不准确问题
 - [[#831](https://github.com/seata/seata/pull/831)] 优化MessageFuture中CountDownLatch，使用CompletableFuture替代
-- [[#834](https://github.com/seata/seata/pull/834)] 修复ExecuteTemplate中非SQLException不抛出问题
+- [[#834](https://github.com/seata/seata/pull/834)] 修复ExecuteTemplate中非SQLException异常不抛出问题
 
 
 
