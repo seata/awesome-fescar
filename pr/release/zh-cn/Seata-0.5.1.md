@@ -10,6 +10,8 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#774](https://github.com/seata/seata/pull/869)] 增加注册中心Etcd3支持
 - [[#793](https://github.com/seata/seata/pull/793)] 增加注册中心sofa-registry支持
 - [[#856](https://github.com/seata/seata/pull/856)] 增加批量删除undolog处理
+- [[#786](https://github.com/seata/seata/pull/786)] 增加全局事务内分支事务并发支持
+
 
 
 ## Bug 修复及优化
@@ -17,7 +19,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#879](https://github.com/seata/seata/pull/879)] 修复批量删除undolog PreparedStatement不关闭问题
 - [[#945](https://github.com/seata/seata/pull/945)] 增加LockManager中releaseLock接口，优化调用逻辑
 - [[#938](https://github.com/seata/seata/pull/938)] 优化TransactionManager服务加载逻辑
-- [[#913](https://github.com/seata/seata/pull/938)] 优化RPC集成框架的模块结构
+- [[#913](https://github.com/seata/seata/pull/938)] 优化与RPC集成框架的模块结构
 - [[#795](https://github.com/seata/seata/pull/795)] 优化server节点写文件的性能
 - [[#921](https://github.com/seata/seata/pull/921)] 修复select for update时的NPE异常
 - [[#925](https://github.com/seata/seata/pull/925)] 优化server启动时复用同一DefaultCoordinator实例
@@ -25,7 +27,6 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#907](https://github.com/seata/seata/pull/907)] 修复hostname can't be null异常
 - [[#923](https://github.com/seata/seata/pull/923)] 修复nettyClientKeyPool连接销毁时Key未format问题
 - [[#891](https://github.com/seata/seata/pull/891)] 修复select union all时NPE异常
-- [[#786](https://github.com/seata/seata/pull/786)] 修复全局事务内分支事务并发问题
 - [[#888](https://github.com/seata/seata/pull/888)] 修复copyright checkstyle验证问题
 - [[#901](https://github.com/seata/seata/pull/901)] 修复Zookeeper 注册时父节点路径不存在问题
 - [[#904](https://github.com/seata/seata/pull/904)] 优化UpdateExecutort后镜像数据查询
