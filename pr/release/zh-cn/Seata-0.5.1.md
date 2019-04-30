@@ -9,7 +9,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 - [[#774](https://github.com/seata/seata/pull/869)] 增加注册中心Etcd3支持
 - [[#793](https://github.com/seata/seata/pull/793)] 增加注册中心sofa-registry支持
-- [[#856](https://github.com/seata/seata/pull/856)] 增加批量删除undolog
+- [[#856](https://github.com/seata/seata/pull/856)] 增加批量删除undolog处理
 
 
 ## Bug 修复及优化
@@ -28,7 +28,6 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#786](https://github.com/seata/seata/pull/786)] 修复全局事务内分支事务并发问题
 - [[#888](https://github.com/seata/seata/pull/888)] 修复copyright checkstyle验证问题
 - [[#901](https://github.com/seata/seata/pull/901)] 修复Zookeeper 注册时父节点路径不存在问题
-- [[#889](https://github.com/seata/seata/pull/889)] 优化版本号
 - [[#904](https://github.com/seata/seata/pull/904)] 优化UpdateExecutort后镜像数据查询
 - [[#802](https://github.com/seata/seata/pull/802)] 优化checkstyle
 - [[#882](https://github.com/seata/seata/pull/882)] 更改copyright，增加copyright自动插件
