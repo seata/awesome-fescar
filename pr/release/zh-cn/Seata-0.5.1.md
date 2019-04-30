@@ -38,7 +38,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#875](https://github.com/seata/seata/pull/875)] 修复select for update，Boolean转型ResultSet失败问题
 - [[#830](https://github.com/seata/seata/pull/830)] 修复RM延迟注册问题
 - [[#872](https://github.com/seata/seata/pull/872)] 修复RegisterRMRequest解码消息长度校验不准确问题
-- [[#831](https://github.com/seata/seata/pull/831)] 优化MessageFuture中CountDownLatch
+- [[#831](https://github.com/seata/seata/pull/831)] 优化MessageFuture中CountDownLatch，使用CompletableFuture替代
 - [[#834](https://github.com/seata/seata/pull/834)] 修复ExecuteTemplate中非SQLException不抛出问题
 
 
