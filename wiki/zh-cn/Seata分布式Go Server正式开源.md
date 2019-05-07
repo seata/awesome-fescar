@@ -5,7 +5,7 @@ date: 2019/04/23
 keywords: seata、分布式事务、高可用
 ---
 
-# Seata高可用集群TaaS设计简介
+# Seata分布式Go Server正式开源
 
 ### 前言
 TaaS是一个兼容Seata（0.5版本以后）的分布式事务解决方案的高可用的服务端组件，使用`Golang`开发，由InfiniVision (http://infinivision.cn) 贡献给Seata开源社区。
@@ -14,7 +14,11 @@ TaaS是一个兼容Seata（0.5版本以后）的分布式事务解决方案的�
 
 在我们完成TaaS的服务端的开发工作后，Seata（当时还叫Fescar）开源了，并且引起了开源社区的广泛关注，加上阿里巴巴的平台影响力以及社区活跃度，我们认为Seata会成为今后开源分布式事务的标准，我们决定TaaS兼容Seata。
 
-在发现Seata的服务端的实现是单机的，高可用等并没有实现，于是我们与Seata社区负责人取得联系，并且决定把TaaS开源，回馈开源社区。 TaaS目前已经开源到 github (https://github.com/seata/taas)。
+在发现Seata的服务端的实现是单机的，高可用等并没有实现，于是我们与Seata社区负责人取得联系，并且决定把TaaS开源，回馈开源社区。 同时，我们会长期维护，并且和Seata版本保持同步。
+
+目前，Seata官方的Java高可用版本也在开发中，TaaS和该高可用版本的设计思想不同，在今后会长期共存。
+
+TaaS已经开源， github (https://github.com/seata/taas)，欢迎大家试用。
 
 ### 设计原则
 1. 高性能，性能和机器数量成正比，即通过加入新机器到集群中，就可以提升性能
