@@ -14,10 +14,7 @@ TaaS是一个兼容Seata（0.5版本以后）的分布式事务解决方案的�
 
 在我们完成TaaS的服务端的开发工作后，Seata（当时还叫Fescar）开源了，并且引起了开源社区的广泛关注，加上阿里巴巴的平台影响力以及社区活跃度，我们认为Seata会成为今后开源分布式事务的标准，我们决定TaaS兼容Seata。
 
-在发现Seata的服务端的实现是单机的，高可用等并没有实现，于是我们与Seata社区负责人取得联系，并且决定把TaaS开源，回馈开源社区。
-
-### 开源计划
-TaaS近期就会开源到 github (https://github.com/seata )，敬请期待！
+在发现Seata的服务端的实现是单机的，高可用等并没有实现，于是我们与Seata社区负责人取得联系，并且决定把TaaS开源，回馈开源社区。 TaaS目前已经开源到 github (https://github.com/seata/taas)。
 
 ### 设计原则
 1. 高性能，性能和机器数量成正比，即通过加入新机器到集群中，就可以提升性能
@@ -54,6 +51,25 @@ TaaS本身不存储全局事务的元数据，元数据存储在Elasticell   (ht
 1. t0时刻点，系统一个存在4个Fragment，分别存在于Seata-TC1，Seata-TC2，Seata-TC3三台机器上
 2. t1时刻，加入新机器Seata-TC4
 3. t2时刻，有3个Fragment的副本被迁移到了Seata-TC4这台机器上
+
+### 在线快速体验
+我们在公网搭建了一个体验的环境：
+* Seata服务端地址： 39.97.115.141:8091
+* UI： http://39.97.115.141:8084/ui/index.html
+
+### 本地快速体验
+使用docker-compose快速体验TaaS的功能。
+```bash
+git clone https://github.com/seata/taas.git
+docker-compse up -d
+```
+由于组件依赖较多，docker-compose启动30秒后，可以对外服务
+
+#### Seata服务地址
+服务默认监听在8091端口，修改Seata对应的服务端地址体验
+
+#### Seata UI 
+访问WEB UI `http://127.0.0.1:8084/ui/index.html`
 
 ### 关于InfiniVision
 深见网络是一家技术驱动的企业级服务提供商，致力于利用人工智能、云计算、区块链、大数据，以及物联网边缘计算技术助力传统企业的数字化转型和升级。深见网络积极拥抱开源文化并将核心算法和架构开源，知名人脸识别软件 InsightFace (https://github.com/deepinsight/insightface) (曾多次获得大规模人脸识别挑战冠军)，以及分布式存储引擎 Elasticell (https://github.com/deepfabric/elasticell) 等均是深见网络的开源产品。
