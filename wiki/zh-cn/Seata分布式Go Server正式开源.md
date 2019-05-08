@@ -5,7 +5,7 @@ date: 2019/04/23
 keywords: seata、分布式事务、高可用
 ---
 
-# Seata分布式Go Server正式开源
+# Seata-Server 高可用Go版本正式开源
 
 ### 前言
 TaaS是一个兼容Seata（0.5版本以后）的分布式事务解决方案的高可用的服务端组件，使用`Golang`开发，由InfiniVision (http://infinivision.cn) 贡献给Seata开源社区。
