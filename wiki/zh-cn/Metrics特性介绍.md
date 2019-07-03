@@ -16,7 +16,7 @@ Seata 0.7.0版本中将包含全新的特性——Metrics，作为APM（Applicat
 
 ## 模块说明
 
-Seata Metrics的模块全部在`seata-metrics`下，0.8版本包含：
+Seata Metrics的模块全部在`seata-metrics`下，0.7版本包含：
 
 ![Modules](https://github.com/seata/awesome-seata/blob/master/img/metrics/Modules.png)
 
@@ -168,3 +168,7 @@ seata.transaction(role=rm,name={BranchTransactionalName},mode=at/mt,meter=counte
 ## 结束语
 
 本文介绍的Metrics是一个侵入式特性，如果用户希望只使用无侵入的Metrics，则可以使用[SkyWalking](https://github.com/apache/skywalking)在6.3版本中增加的与Seata集成的方案。
+
+#### 作者简介
+
+郑扬勇，云粒智慧技术专家，开源爱好者，关注微服务、IOT领域技术，希望通过参与开源帮助别人的同时帮助自己。
