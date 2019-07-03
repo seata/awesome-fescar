@@ -167,4 +167,4 @@ seata.transaction(role=rm,name={BranchTransactionalName},mode=at/mt,meter=counte
 
 ## 结束语
 
-本文介绍的Metrics是一个侵入式特性，如果用户希望只使用无侵入的Metrics，则可以使用在0.6.3版本中推出的与SkyWalking集成的方案。
+本文介绍的Metrics是一个侵入式特性，如果用户希望只使用无侵入的Metrics，则可以使用[SkyWalking](https://github.com/apache/skywalking)在6.3版本中增加的与Seata集成的方案。
