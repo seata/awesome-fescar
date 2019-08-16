@@ -14,7 +14,8 @@ The version is updated as follows:
 - [[#1365](https://github.com/seata/seata/pull/1365)] support schedule check table mata
 - [[#1371](https://github.com/seata/seata/pull/1371)] support mysql preparedStatement batch self-increment primary keys
 - [[#1337](https://github.com/seata/seata/pull/1337)] support mysql batch insert for non-self-inc primary keys
-- [[#1235](https://github.com/seata/seata/pull/1235)] support to delete undolog in back task
+- [[#1235](https://github.com/seata/seata/pull/1453)] support delete expired undolog use protobuf codec
+- [[#1235](https://github.com/seata/seata/pull/1235)] support to delete undolog in back task use seata codec
 - [[#1323](https://github.com/seata/seata/pull/1323)] support database driver class configuration item
 
 
@@ -44,6 +45,7 @@ The version is updated as follows:
 
 
 ### optimize： 
+- [[#1474](https://github.com/seata/seata/pull/1474)] optimize data image compare log
 - [[#1446](https://github.com/seata/seata/pull/1446)] optimize the server's schedule tasks 
 - [[#1448](https://github.com/seata/seata/pull/1448)] refactor executor class remove the duplicate code 
 - [[#1408](https://github.com/seata/seata/pull/1408)] change ChannelFactory package in TmRpcClientTest 
