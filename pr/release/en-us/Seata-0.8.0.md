@@ -97,4 +97,4 @@ Also, we receive many valuable issues, questions and advices from our community.
 ### Link
 - **Seata:** https://github.com/seata/seata  
 - **Seata-Samples:** https://github.com/seata/seata-samples   
-- **Release:**https://github.com/seata/seata/releases
+- **Release:** https://github.com/seata/seata/releases
