@@ -1,4 +1,4 @@
-##Seata 0.8.0 
+## Seata 0.8.0 
 Seata 0.8.0 Released.
 
 Seata is an easy-to-use, high-performance, open source distributed transaction solution.
@@ -43,7 +43,7 @@ The version is updated as follows:
 - [[#1313](https://github.com/seata/seata/pull/1313)] fix DefaultFailureHandler check status NPE
 
 
-###optimize： 
+### optimize： 
 - [[#1446](https://github.com/seata/seata/pull/1446)] optimize the server's schedule tasks 
 - [[#1448](https://github.com/seata/seata/pull/1448)] refactor executor class remove the duplicate code 
 - [[#1408](https://github.com/seata/seata/pull/1408)] change ChannelFactory package in TmRpcClientTest 
