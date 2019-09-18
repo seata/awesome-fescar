@@ -46,14 +46,11 @@ The version is updated as follows:
 
 ### optimize： 
 - [[#1629](https://github.com/seata/seata/pull/1629)] optimize the watcher efficiency of etcd3
-
 - [[#1661](https://github.com/seata/seata/pull/1661)] optimize global_table insert transaction_name size 
 - [[#1633](https://github.com/seata/seata/pull/1633)] optimize branch transaction repeated reporting false 
 - [[#1654](https://github.com/seata/seata/pull/1654)] optimize wrong usage of slf4j  
 - [[#1593](https://github.com/seata/seata/pull/1593)] optimize and standardize server log 
--
 - [[#1648](https://github.com/seata/seata/pull/1648)] optimize transaction_name length when building the table
-
 - [[#1576](https://github.com/seata/seata/pull/1576)] eliminate the impact of instructions reordering on session async committing task 
 - [[#1618](https://github.com/seata/seata/pull/1618)] optimize undolog manager and fix delete undolog support oracle
 - [[#1469](https://github.com/seata/seata/pull/1469)] reduce the number of lock conflict exception  
