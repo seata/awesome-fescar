@@ -80,6 +80,7 @@ TC中Metrics的初始化步骤和工作原理如下：
 ## 如何使用
 
 如果需要开启TC的Metrics，需要在其配置中增加配置项：
+
 ```text
 ## metrics settings
 metrics {
@@ -97,6 +98,7 @@ metrics {
 ### 下载并启动Prometheus
 
 下载完毕后，修改Prometheus的配置文件`prometheus.yml`，在`scrape_configs`中增加一项抓取Seata的度量数据：
+
 ```yaml
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
