@@ -18,7 +18,7 @@ Seata 0.7.0版本中将包含全新的特性——Metrics，作为APM（Applicat
 
 Seata Metrics的模块全部在`seata-metrics`下，0.7版本包含：
 
-![Modules](https://github.com/seata/awesome-seata/blob/master/img/metrics/Modules.png)
+![Modules](../../img/metrics/Modules.png)
 
 由2个核心API模块`seata-metrics-api`和`seata-metrics-core`，以及N个实现模块例如`seata-metrics-registry-compact`、`seata-metrics-exporter-prometheus`构成：
 
@@ -65,7 +65,7 @@ Prometheus发布器`PrometheusExporter`，将度量数据同步给Prometheus。
 
 ## 工作原理
 
-![Mechanism](https://github.com/seata/awesome-seata/blob/master/img/metrics/Mechanism.png)
+![Mechanism](../../img/metrics/Mechanism.png)
 
 TC中Metrics的初始化步骤和工作原理如下：
 

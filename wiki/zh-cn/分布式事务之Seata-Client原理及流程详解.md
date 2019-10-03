@@ -69,7 +69,8 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
  1. transport
      transport部分的配置对应[NettyServerConfig](https://github.com/seata/seata/blob/develop/core/src/main/java/com/alibaba/fescar/core/rpc/netty/NettyServerConfig.java)类，用于定义Netty相关的参数，TM、RM与fescar-server之间使用Netty进行通信
  2. service
-	 ```js
+
+```js
 	 service {
 	  #vgroup->rgroup
 	  vgroup_mapping.my_test_tx_group = "default"
@@ -81,9 +82,9 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	  是否启用seata的分布式事务
 	  disableGlobalTransaction = false
 	}
-	 ```
+```
  3. client
-    ```js
+```js
 	client {
 	  #RM接收TC的commit通知后缓冲上限
 	  async.commit.buffer.limit = 10000
@@ -92,10 +93,11 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	    retry.times = 30
 	  }
 	}
-    ```
+```
 ## 数据源Proxy
 除了前面的配置文件，fescar在AT模式下稍微有点代码量的地方就是对数据源的代理指定，且目前只能基于`DruidDataSource`的代理。
 注：在最新发布的0.4.2版本中已支持任意数据源类型
+
 ```java
 @Bean
 @ConfigurationProperties(prefix = "spring.datasource")
@@ -113,6 +115,7 @@ public DataSourceProxy dataSource(DruidDataSource druidDataSource) {
 使用`DataSourceProxy`的目的是为了引入`ConnectionProxy`,fescar无侵入的一方面就体现在`ConnectionProxy`的实现上，即分支事务加入全局事务的切入点是在本地事务的`commit`阶段，这样设计可以保证业务数据与`undo_log`是在一个本地事务中。
 
 `undo_log`是需要在业务库上创建的一个表，fescar依赖该表记录每笔分支事务的状态及二阶段`rollback`的回放数据。不用担心该表的数据量过大形成单点问题，在全局事务`commit`的场景下事务对应的`undo_log`会异步删除。
+
 ```sql
 CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -612,7 +615,7 @@ private void doBranchCommits() {
 对于rollback场景的触发有两种情况
  1. 分支事务处理异常，即[ConnectionProxy](https://github.com/seata/seata/blob/develop/rm-datasource/src/main/java/com/alibaba/fescar/rm/datasource/ConnectionProxy.java)中`report(false)`的情况
  2. TM捕获到下游系统上抛的异常，即发起全局事务标有`@GlobalTransactional`注解的方法捕获到的异常。在前面[TransactionalTemplate](https://github.com/seata/seata/blob/develop/tm/src/main/java/com/alibaba/fescar/tm/api/TransactionalTemplate.java)类的execute模版方法中，对business.execute()的调用进行了catch，catch后会调用rollback，由TM通知TC对应XID需要回滚事务
- ```java
+```java
  public void rollback() throws TransactionException {
     //只有Launcher能发起这个rollback
     if (role == GlobalTransactionRole.Participant) {
@@ -633,7 +636,7 @@ private void doBranchCommits() {
         }
     }
 }
- ```
+```
 TC汇总后向参与者发送rollback指令，RM在[AbstractRMHandler](https://github.com/seata/seata/blob/develop/rm/src/main/java/com/alibaba/fescar/rm/AbstractRMHandler.java)类的doBranchRollback方法中接收这个rollback的通知
 ```java
 protected void doBranchRollback(BranchRollbackRequest request, BranchRollbackResponse response) throws TransactionException {
