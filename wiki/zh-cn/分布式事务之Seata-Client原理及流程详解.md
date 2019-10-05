@@ -21,6 +21,7 @@ keywords: fescar、seata、分布式事务
 ## 分布式框架支持
 Fescar使用XID表示一个分布式事务，XID需要在一次分布式事务请求所涉的系统中进行传递，从而向feacar-server发送分支事务的处理情况，以及接收feacar-server的commit、rollback指令。
 Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-boot）的分布式项目社区也提供了相应的实现
+
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
