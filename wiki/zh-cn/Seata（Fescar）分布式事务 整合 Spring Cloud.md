@@ -12,6 +12,7 @@
 
 本次搭建流程为：client->网关->服务消费者->服务提供者.
 
+```
                         技术框架：spring cloud gateway
 
                                 spring cloud fegin
@@ -19,16 +20,18 @@
                                 nacos1.0.RC2
 
                                 fescar-server0.4.1(Seata)
-
+```
 关于nacos的启动方式请参考：[Nacos启动参考](https://nacos.io/zh-cn/docs/quick-start.html)       
 
 首先seata支持很多种注册服务方式，在 fescar-server-0.4.1\conf 目录下
 
+```
     file.conf
     logback.xml
     nacos-config.sh
     nacos-config.text
     registry.conf
+``` 
 
 总共包含五个文件，其中 file.conf和 registry.conf 分别是我们在 服务消费者 & 服务提供者 代码段需要用到的文件。
 注：file.conf和 registry.conf 必须在当前使用的应用程序中，即： 服务消费者 & 服务提供者 两个应用在都需要包含。
@@ -43,6 +46,7 @@
 注：如果整合eureka请选用官方最新版本。
 
 # 3.核心配置
+
 ```java
 registry {
   # file 、nacos 、eureka、redis、zk
@@ -99,12 +103,14 @@ config {
 这里要说明的是nacos-config.sh 是针对采用nacos配置中心的话，需要执行的一些默认初始化针对nacos的脚本。
 
 SEATA的启动方式参考官方： 注意，这里需要说明下，命令启动官方是通过 空格区分参数，所以要注意。这里的IP 是可选参数，因为涉及到DNS解析，在部分情况下，有的时候在注册中心fescar 注入nacos的时候会通过获取地址，如果启动报错注册发现是计算机名称，需要指定IP。或者host配置IP指向。不过这个问题，在最新的SEATA中已经进行了修复。
-```java
+
+```shell
 sh fescar-server.sh 8091 /home/admin/fescar/data/ IP（可选）
 ```
 
 
 上面提到过，在我们的代码中也是需要file.conf 和registry.conf 这里着重的地方要说的是file.conf,file.conf只有当registry中 配置file的时候才会进行加载，如果采用ZK、nacos、作为配置中心，可以忽略。因为type指定其他是不加载file.conf的，但是对应的 service.localRgroup.grouplist  和 service.vgroup_mapping  需要在支持配置中心 进行指定，这样你的client 在启动后会通过自动从配置中心获取对应的 SEATA 服务 和地址。如果不配置会出现无法连接server的错误。当然如果你采用的eureka在config的地方就需要采用type="file" 目前SEATA config暂时不支持eureka的形势
+
 ```java
 transport {
   # tcp udt unix-domain-socket
@@ -150,11 +156,13 @@ client {
 
 # 4.服务相关
  这里有两个地方需要注意
+
 ```java
     grouplist IP，这里是当前fescar-sever的IP端口，
     vgroup_mapping的配置。
 ```
  vgroup_mapping.服务名称-fescar-service-group,这里 要说下服务名称其实是你当前的consumer 或者provider application.properties的配置的应用名称：spring.application.name=service-provider，源代码中是 获取应用名称与 fescar-service-group 进行拼接，做key值。同理value是当前fescar的服务名称，  cluster = "default"  / application = "default"
+
 ```java
      vgroup_mapping.service-provider-fescar-service-group = "default"
       #only support single node
@@ -165,6 +173,7 @@ client {
 如果你采用nacos做配置中心，需要在nacos通过添加配置方式进行配置添加。
 # 5.事务使用
 我这里的代码逻辑是请求通过网关进行负载转发到我的consumer上，在consumer 中通过fegin进行provider请求。官方的例子中是通过fegin进行的，而我们这边直接通过网关转发，所以全局事务同官方的demo一样 也都是在controller层。
+
 ```java
 @RestController
 public class DemoController {
@@ -206,6 +215,7 @@ SEATA是通过全局的XID方式进行事务统一标识方式。这里就不列
 同事针对每个提供服务的项目，需要进行数据库连接池的代理。也就是：
 
 目前只支持Druid连接池，后续会继续支持。
+
 ```java
 @Configuration
 public class DatabaseConfiguration {

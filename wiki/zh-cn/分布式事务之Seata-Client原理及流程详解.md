@@ -21,6 +21,7 @@ keywords: fescar、seata、分布式事务
 ## 分布式框架支持
 Fescar使用XID表示一个分布式事务，XID需要在一次分布式事务请求所涉的系统中进行传递，从而向feacar-server发送分支事务的处理情况，以及接收feacar-server的commit、rollback指令。
 Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-boot）的分布式项目社区也提供了相应的实现
+
 ```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -42,7 +43,7 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
  - 业务：business-server
  
 项目结构如下图
-![在这里插入图片描述](https://github.com/fescar-group/awesome-fescar/blob/master/img/20190410114411366.png)
+![在这里插入图片描述](../../img/20190410114411366.png)
  
 **正常业务**
    1. business发起购买请求
@@ -60,16 +61,19 @@ Fescar官方已支持全版本的dubbo协议，而对于spring cloud（spring-bo
 
 ## 配置文件
 fescar的配置入口文件是[registry.conf](https://github.com/seata/seata/blob/develop/config/src/main/resources/registry.conf),查看代码[ConfigurationFactory](https://github.com/seata/seata/blob/develop/config/src/main/java/com/alibaba/fescar/config/ConfigurationFactory.java)得知目前还不能指定该配置文件，所以配置文件名称只能为registry.conf
+
 ```java
 private static final String REGISTRY_CONF = "registry.conf";
 public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY_CONF);
 ```
+
 在`registry`中可以指定具体配置的形式，默认使用file类型，在file.conf中有3部分配置内容
 
  1. transport
      transport部分的配置对应[NettyServerConfig](https://github.com/seata/seata/blob/develop/core/src/main/java/com/alibaba/fescar/core/rpc/netty/NettyServerConfig.java)类，用于定义Netty相关的参数，TM、RM与fescar-server之间使用Netty进行通信
  2. service
-	 ```js
+
+```js
 	 service {
 	  #vgroup->rgroup
 	  vgroup_mapping.my_test_tx_group = "default"
@@ -81,9 +85,10 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	  是否启用seata的分布式事务
 	  disableGlobalTransaction = false
 	}
-	 ```
+```
  3. client
-    ```js
+
+```js
 	client {
 	  #RM接收TC的commit通知后缓冲上限
 	  async.commit.buffer.limit = 10000
@@ -92,10 +97,11 @@ public static final Configuration FILE_INSTANCE = new FileConfiguration(REGISTRY
 	    retry.times = 30
 	  }
 	}
-    ```
+```
 ## 数据源Proxy
 除了前面的配置文件，fescar在AT模式下稍微有点代码量的地方就是对数据源的代理指定，且目前只能基于`DruidDataSource`的代理。
 注：在最新发布的0.4.2版本中已支持任意数据源类型
+
 ```java
 @Bean
 @ConfigurationProperties(prefix = "spring.datasource")
@@ -113,6 +119,7 @@ public DataSourceProxy dataSource(DruidDataSource druidDataSource) {
 使用`DataSourceProxy`的目的是为了引入`ConnectionProxy`,fescar无侵入的一方面就体现在`ConnectionProxy`的实现上，即分支事务加入全局事务的切入点是在本地事务的`commit`阶段，这样设计可以保证业务数据与`undo_log`是在一个本地事务中。
 
 `undo_log`是需要在业务库上创建的一个表，fescar依赖该表记录每笔分支事务的状态及二阶段`rollback`的回放数据。不用担心该表的数据量过大形成单点问题，在全局事务`commit`的场景下事务对应的`undo_log`会异步删除。
+
 ```sql
 CREATE TABLE `undo_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -130,15 +137,18 @@ CREATE TABLE `undo_log` (
 ## 启动Server
 前往[https://github.com/seata/seata/releases](https://github.com/seata/seata/releases) 下载与Client版本对应的fescar-server,避免由于版本的不同导致的协议不一致问题
 进入解压之后的 bin 目录，执行
+
 ```shell
 ./fescar-server.sh 8091 ../data
 ```
 启动成功输出
+
 ```shell
 2019-04-09 20:27:24.637 INFO [main]c.a.fescar.core.rpc.netty.AbstractRpcRemotingServer.start:152 -Server started ... 
 ```
 ## 启动Client
 fescar的加载入口类位于[GlobalTransactionAutoConfiguration](https://github.com/spring-cloud-incubator/spring-cloud-alibaba/blob/finchley/spring-cloud-alibaba-fescar/src/main/java/org/springframework/cloud/alibaba/fescar/GlobalTransactionAutoConfiguration.java)，对基于spring boot的项目能够自动加载，当然也可以通过其他方式示例化`GlobalTransactionScanner`
+
 ```java
 @Configuration
 @EnableConfigurationProperties({FescarProperties.class})
@@ -169,10 +179,12 @@ public class GlobalTransactionAutoConfiguration {
 }
 ```
 可以看到支持一个配置项FescarProperties，用于配置事务分组名称
+
 ```json
 spring.cloud.alibaba.fescar.tx-service-group=my_test_tx_group
 ```
 如果不指定服务组，则默认使用spring.application.name+ -fescar-service-group生成名称，所以不指定spring.application.name启动会报错
+
 ```java
 @ConfigurationProperties("spring.cloud.alibaba.fescar")
 public class FescarProperties {
@@ -191,6 +203,7 @@ public class FescarProperties {
 }
 ```
 获取applicationId和txServiceGroup后，创建[GlobalTransactionScanner](https://github.com/seata/seata/blob/develop/spring/src/main/java/com/alibaba/fescar/spring/annotation/GlobalTransactionScanner.java)对象，主要看类中initClient方法
+
 ```java
 private void initClient() {
     if (StringUtils.isNullOrEmpty(applicationId) || StringUtils.isNullOrEmpty(txServiceGroup)) {
@@ -207,6 +220,7 @@ private void initClient() {
 ```
 方法中可以看到初始化了`TMClient`和`RMClient`，对于一个服务既可以是TM角色也可以是RM角色，至于什么时候是TM或者RM则要看在一次全局事务中`@GlobalTransactional`注解标注在哪。
 Client创建的结果是与TC的一个Netty连接，所以在启动日志中可以看到两个Netty Channel，其中标明了transactionRole分别为`TMROLE`和`RMROLE`
+
 ```java
 2019-04-09 13:42:57.417  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"business-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"transactionServiceGroup":"my_test_tx_group","typeCode":101,"version":"0.4.1"},"transactionRole":"TMROLE"}
 2019-04-09 13:42:57.505  INFO 93715 --- [imeoutChecker_1] c.a.f.c.rpc.netty.NettyPoolableFactory   : NettyPool create channel to {"address":"127.0.0.1:8091","message":{"applicationId":"business-service","byteBuffer":{"char":"\u0000","direct":false,"double":0.0,"float":0.0,"int":0,"long":0,"readOnly":false,"short":0},"transactionServiceGroup":"my_test_tx_group","typeCode":103,"version":"0.4.1"},"transactionRole":"RMROLE"}
@@ -228,6 +242,7 @@ Client创建的结果是与TC的一个Netty连接，所以在启动日志中可�
 4. `RmRpcClient`、`TmRpcClient`成功实例化
 ## TM处理流程
 在本例中，TM的角色是business-service,BusinessService的purchase方法标注了`@GlobalTransactional`注解
+
 ```java
 @Service
 public class BusinessService {
@@ -246,6 +261,7 @@ public class BusinessService {
 }
 ```
 方法调用后将会创建一个全局事务，首先关注`@GlobalTransactional`注解的作用，在[GlobalTransactionalInterceptor](https://github.com/seata/seata/blob/develop/spring/src/main/java/com/alibaba/fescar/spring/annotation/GlobalTransactionalInterceptor.java)中被拦截处理
+
 ```java
 /**
  * AOP拦截方法调用
@@ -271,6 +287,7 @@ public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
 }
 ```
 `handleGlobalTransaction`方法中对[TransactionalTemplate](https://github.com/seata/seata/blob/develop/tm/src/main/java/com/alibaba/fescar/tm/api/TransactionalTemplate.java)的execute进行了调用，从类名可以看到这是一个标准的模版方法，它定义了TM对全局事务处理的标准步骤，注释已经比较清楚了
+
 ```java
 public Object execute(TransactionalExecutor business) throws TransactionalExecutor.ExecutionException {
     // 1. get or create a transaction
@@ -323,6 +340,7 @@ public Object execute(TransactionalExecutor business) throws TransactionalExecut
 }
 ```
 通过[DefaultGlobalTransaction](https://github.com/seata/seata/blob/develop/tm/src/main/java/com/alibaba/fescar/tm/api/DefaultGlobalTransaction.java)的begin方法开启全局事务
+
 ```java
 public void begin(int timeout, String name) throws TransactionException {
     if (role != GlobalTransactionRole.Launcher) {
@@ -351,6 +369,7 @@ public void begin(int timeout, String name) throws TransactionException {
 由此可见，全局事务的创建只能由Launcher执行，而一次分布式事务中也只有一个Launcher存在。
 
 [DefaultTransactionManager](https://github.com/seata/seata/blob/develop/tm/src/main/java/com/alibaba/fescar/tm/DefaultTransactionManager.java)负责TM与TC通讯，发送begin、commit、rollback指令
+
 ```java
 @Override
 public String begin(String applicationId, String transactionServiceGroup, String name, int timeout)
@@ -363,6 +382,7 @@ public String begin(String applicationId, String transactionServiceGroup, String
 }
 ```
 至此拿到fescar-server返回的XID表示一个全局事务创建成功，日志中也反应了上述流程
+
 ```java
 2019-04-09 13:46:57.417 DEBUG 31326 --- [nio-8084-exec-1] c.a.f.c.rpc.netty.AbstractRpcRemoting    : offer message: timeout=60000,transactionName=purchase(java.lang.String,java.lang.String,int)
 2019-04-09 13:46:57.417 DEBUG 31326 --- [geSend_TMROLE_1] c.a.f.c.rpc.netty.AbstractRpcRemoting    : write message:FescarMergeMessage timeout=60000,transactionName=purchase(java.lang.String,java.lang.String,int), channel:[id: 0xa148545e, L:/127.0.0.1:56120 - R:/127.0.0.1:8091],active?true,writable?true,isopen?true
@@ -373,6 +393,7 @@ public String begin(String applicationId, String transactionServiceGroup, String
 ```
 全局事务创建后，就开始执行business.execute()，即业务代码`storageFeignClient.deduct(commodityCode, orderCount)`进入RM处理流程，此处的业务逻辑为调用storage-service的扣减库存接口。
 ## RM处理流程
+
 ```java
 @GetMapping(path = "/deduct")
 public Boolean deduct(String commodityCode, Integer count){
@@ -391,6 +412,7 @@ public void deduct(String commodityCode, int count){
 storage的接口和service方法并未出现fescar相关的代码和注解，体现了fescar的无侵入。那它是如何加入到这次全局事务中的呢？答案在[ConnectionProxy](https://github.com/seata/seata/blob/develop/rm-datasource/src/main/java/com/alibaba/fescar/rm/datasource/ConnectionProxy.java)中，这也是前面说为什么必须要使用`DataSourceProxy`的原因，通过DataSourceProxy才能在业务代码的本地事务提交时，fescar通过该切入点，向TC注册分支事务并发送RM的处理结果。
 
 由于业务代码本身的事务提交被`ConnectionProxy`代理实现，所以在提交本地事务时，实际执行的是ConnectionProxy的commit方法
+
 ```java
 public void commit() throws SQLException {
 	//如果当前是全局事务，则执行全局事务的提交
@@ -441,6 +463,7 @@ private void register() throws TransactionException {
 }
 ```
 通过日志印证一下上面的流程
+
 ```java
 2019-04-09 21:57:48.341 DEBUG 38933 --- [nio-8081-exec-1] o.s.c.a.f.web.FescarHandlerInterceptor   : xid in RootContext null xid in RpcContext 192.168.0.2:8091:2008546211
 2019-04-09 21:57:48.341 DEBUG 38933 --- [nio-8081-exec-1] c.a.fescar.core.context.RootContext      : bind 192.168.0.2:8091:2008546211
@@ -482,6 +505,7 @@ Hibernate: update storage_tbl set count=? where id=?
 其中第1步和第9步，是在[FescarHandlerInterceptor](https://github.com/dongsheep/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-fescar/src/main/java/org/springframework/cloud/alibaba/fescar/web/FescarHandlerInterceptor.java)中完成的，该类并不属于fescar，是前面提到的spring-cloud-alibaba-fescar,它实现了基于feign、rest通信时将xid bind和unbind到当前请求上下文中。到这里RM完成了PhaseOne阶段的工作，接着看PhaseTwo阶段的处理逻辑。
 ## 事务提交
 各分支事务执行完成后，TC对各RM的汇报结果进行汇总，给各RM发送commit或rollback的指令
+
 ```java
 2019-04-09 21:57:49.813 DEBUG 38933 --- [lector_RMROLE_1] c.a.f.c.rpc.netty.MessageCodecHandler    : Receive:xid=192.168.0.2:8091:2008546211,branchId=2008546212,branchType=AT,resourceId=jdbc:mysql://127.0.0.1:3306/db_storage?useSSL=false,applicationData=null,messageId:1
 2019-04-09 21:57:49.813 DEBUG 38933 --- [lector_RMROLE_1] c.a.f.c.rpc.netty.AbstractRpcRemoting    : com.alibaba.fescar.core.rpc.netty.RmRpcClient@7d61f5d4 msgId:1, body:xid=192.168.0.2:8091:2008546211,branchId=2008546212,branchType=AT,resourceId=jdbc:mysql://127.0.0.1:3306/db_storage?useSSL=false,applicationData=null
@@ -498,6 +522,7 @@ Hibernate: update storage_tbl set count=? where id=?
 3. 将commit结果发送给TC，branchStatus为PhaseTwo_Committed
 
 具体看下二阶段commit的执行过程，在[AbstractRMHandler](https://github.com/seata/seata/blob/develop/rm/src/main/java/com/alibaba/fescar/rm/AbstractRMHandler.java)类的doBranchCommit方法
+
 ```java
 /**
  * 拿到通知的xid、branchId等关键参数
@@ -515,6 +540,7 @@ protected void doBranchCommit(BranchCommitRequest request, BranchCommitResponse 
 }
 ```
 最终会将branchCommit的请求调用到[AsyncWorker](https://github.com/seata/seata/blob/develop/rm-datasource/src/main/java/com/alibaba/fescar/rm/datasource/AsyncWorker.java)的branchCommit方法。AsyncWorker的处理方式是fescar架构的一个关键部分，因为大部分事务都是会正常提交的，所以在PhaseOne阶段就已经结束了，这样就可以将锁最快的释放。PhaseTwo阶段接收commit的指令后，异步处理即可。将PhaseTwo的时间消耗排除在一次分布式事务之外。
+
 ```java
 private static final List<Phase2Context> ASYNC_COMMIT_BUFFER = Collections.synchronizedList( new ArrayList<Phase2Context>());
         
@@ -612,7 +638,8 @@ private void doBranchCommits() {
 对于rollback场景的触发有两种情况
  1. 分支事务处理异常，即[ConnectionProxy](https://github.com/seata/seata/blob/develop/rm-datasource/src/main/java/com/alibaba/fescar/rm/datasource/ConnectionProxy.java)中`report(false)`的情况
  2. TM捕获到下游系统上抛的异常，即发起全局事务标有`@GlobalTransactional`注解的方法捕获到的异常。在前面[TransactionalTemplate](https://github.com/seata/seata/blob/develop/tm/src/main/java/com/alibaba/fescar/tm/api/TransactionalTemplate.java)类的execute模版方法中，对business.execute()的调用进行了catch，catch后会调用rollback，由TM通知TC对应XID需要回滚事务
- ```java
+
+```java
  public void rollback() throws TransactionException {
     //只有Launcher能发起这个rollback
     if (role == GlobalTransactionRole.Participant) {
@@ -633,8 +660,9 @@ private void doBranchCommits() {
         }
     }
 }
- ```
+```
 TC汇总后向参与者发送rollback指令，RM在[AbstractRMHandler](https://github.com/seata/seata/blob/develop/rm/src/main/java/com/alibaba/fescar/rm/AbstractRMHandler.java)类的doBranchRollback方法中接收这个rollback的通知
+
 ```java
 protected void doBranchRollback(BranchRollbackRequest request, BranchRollbackResponse response) throws TransactionException {
     String xid = request.getXid();
@@ -648,6 +676,7 @@ protected void doBranchRollback(BranchRollbackRequest request, BranchRollbackRes
 }
 ```
 然后将rollback请求传递到`DataSourceManager`类的branchRollback方法
+
 ```java
 public BranchStatus branchRollback(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
     //根据resourceId获取对应的数据源

@@ -9,7 +9,6 @@ The version is updated as follows:
 ### feature：
 - [[#1598](https://github.com/seata/seata/pull/1598)] support profile to use absolute path
 - [[#1617](https://github.com/seata/seata/pull/1617)] support profile’s（registry.conf） name configurable
-- [[#1392](https://github.com/seata/seata/pull/1392)] support undo log table name configurable 
 - [[#1418](https://github.com/seata/seata/pull/1418)] support undo_log kryo serializer
 - [[#1489](https://github.com/seata/seata/pull/1489)] support protobuf maven plugin
 - [[#1437](https://github.com/seata/seata/pull/1437)] support kryo codec
