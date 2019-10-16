@@ -15,7 +15,7 @@ The version is updated as follows:
 
 
 ### bugfix：
-- [[#1605](https://github.com/seata/seata/pull/1605)] fix deadlocks that can be caused by object locks and global locks, optimize the granularity of locks
+- [[#1605](https://github.com/seata/seata/pull/1605)] fix deadlocks that can be caused by object locks and global locks and optimize the granularity of locks
 - [[#1685](https://github.com/seata/seata/pull/1685)] fix pk too long in lock table on db mode and optimize error log
 - [[#1691](https://github.com/seata/seata/pull/1691)] fix can't access a member of DruidDataSourceWrapper
 - [[#1699](https://github.com/seata/seata/pull/1699)] fix use 'in' and 'between' in where condition for Oracle and Mysql
