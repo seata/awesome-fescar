@@ -51,7 +51,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1633](https://github.com/seata/seata/pull/1633)] 优化分支事务获取全局锁失败重复report（false）问题 
 - [[#1654](https://github.com/seata/seata/pull/1654)] 优化 slf4j 的错误使用
 - [[#1593](https://github.com/seata/seata/pull/1593)] 优化和规范化 server 的日志 
-- [[#1648](https://github.com/seata/seata/pull/1648)] 优化 transaction_name 在 建表时的长度
+- [[#1648](https://github.com/seata/seata/pull/1648)] 优化 transaction_name 在建表时的长度
 - [[#1576](https://github.com/seata/seata/pull/1576)] 消除重排序对 session 异步提交的影响 
 - [[#1618](https://github.com/seata/seata/pull/1618)] 优化 undolog manager 和 修复oracle undolog 的删除
 - [[#1469](https://github.com/seata/seata/pull/1469)] 提供不释放数据库锁情况下等待全局锁的释放以减少锁冲突
