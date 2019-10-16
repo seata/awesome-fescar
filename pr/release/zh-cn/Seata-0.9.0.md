@@ -8,11 +8,11 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 
 ### feature：
-- [[#1608](https://github.com/seata/seata/pull/1608)] 长事务解决方案: Saga模式（基于状态机实现）
+- [[#1608](https://github.com/seata/seata/pull/1608)] 长事务解决方案: Saga 模式（基于状态机实现）
 - [[#1625](https://github.com/seata/seata/pull/1625)] 支持自定义配置和注册中心类型
-- [[#1656](https://github.com/seata/seata/pull/1656)] 支持spring cloud config 配置中心
-- [[#1689](https://github.com/seata/seata/pull/1689)] 支持-e启动参数，用于指定环境名称
-- [[#1739](https://github.com/seata/seata/pull/1739)] 支持TM commit或rollback失败时的重试
+- [[#1656](https://github.com/seata/seata/pull/1656)] 支持 spring cloud config 配置中心
+- [[#1689](https://github.com/seata/seata/pull/1689)] 支持 -e 启动参数，用于指定环境名称
+- [[#1739](https://github.com/seata/seata/pull/1739)] 支持 TM commit 或rollback 失败时的重试
 
 
 ### bugfix：
@@ -33,9 +33,9 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 
 ### optimize： 
-- [[#1701](https://github.com/seata/seata/pull/1701)] 移除无用的imports
+- [[#1701](https://github.com/seata/seata/pull/1701)] 移除无用的 imports
 - [[#1705](https://github.com/seata/seata/pull/1705)] 优化了一些基于 java5 的语法结构
-- [[#1706](https://github.com/seata/seata/pull/1706)] 将内部类声明为static
+- [[#1706](https://github.com/seata/seata/pull/1706)] 将内部类声明为 static
 - [[#1707](https://github.com/seata/seata/pull/1707)] 使用 StandardCharsets.UTF_8 代替 utf-8 编码
 - [[#1712](https://github.com/seata/seata/pull/1712)] 抽象 undologManager 的通用方法
 - [[#1722](https://github.com/seata/seata/pull/1722)] 简化代码提高代码的可读性
@@ -46,7 +46,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1750](https://github.com/seata/seata/pull/1750)] 抽象 tableMetaCache 方法
 - [[#1755](https://github.com/seata/seata/pull/1755)] 提高 seata-common 模块的单测覆盖率
 - [[#1756](https://github.com/seata/seata/pull/1756)] 升级 jackson 版本防止潜在的安全漏洞
-- [[#1657](https://github.com/seata/seata/pull/1657)] 优化文件存储模式下文件rolling时占用较大direct buffer的问题
+- [[#1657](https://github.com/seata/seata/pull/1657)] 优化文件存储模式下文件 rolling 时占用较大 direct buffer的问题
 
 
 
