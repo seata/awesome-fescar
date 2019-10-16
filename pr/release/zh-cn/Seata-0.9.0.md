@@ -10,44 +10,43 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 ### feature：
 - [[#1608](https://github.com/seata/seata/pull/1608)] 长事务解决方案: Saga模式（基于状态机实现）
 - [[#1625](https://github.com/seata/seata/pull/1625)] 支持自定义配置和注册中心类型
-- [[#1656](https://github.com/seata/seata/pull/1656)] 支持spring cloud配置
-- [[#1689](https://github.com/seata/seata/pull/1689)] 支持新的参数选项"-e", 用于设置配置的名称
-- [[#1739](https://github.com/seata/seata/pull/1739)] 支持当commit或rollback失败的时候重试
+- [[#1656](https://github.com/seata/seata/pull/1656)] 支持spring cloud config 配置中心
+- [[#1689](https://github.com/seata/seata/pull/1689)] 支持-e启动参数，用于指定环境名称
+- [[#1739](https://github.com/seata/seata/pull/1739)] 支持TM commit或rollback失败时的重试
 
 
 ### bugfix：
-- [[#1605](https://github.com/seata/seata/pull/1605)] 修复死锁问题和优化锁的实现在获取锁之前先用主键进行排序
-- [[#1685](https://github.com/seata/seata/pull/1685)] fix pk too long in lock table on db mode and optimize error log
-- [[#1691](https://github.com/seata/seata/pull/1691)] fix can not access a member of DruidDataSourceWrapper
-- [[#1699](https://github.com/seata/seata/pull/1699)] fix use 'in' and 'between' in where condition for Oracle and Mysql
-- [[#1713](https://github.com/seata/seata/pull/1713)] correct LockManagerTest.concurrentUseAbilityTest assertion condition
-- [[#1720](https://github.com/seata/seata/pull/1720)] fix can't refresh table meta data for oracle
-- [[#1729](https://github.com/seata/seata/pull/1729)] fix oracle batch insert error
-- [[#1735](https://github.com/seata/seata/pull/1735)] clean xid when tm commit or rollback failed
-- [[#1749](https://github.com/seata/seata/pull/1749)] fix undo support oracle table meta cache
-- [[#1751](https://github.com/seata/seata/pull/1751)] fix memory lock is not released due to hash conflict
-- [[#1761](https://github.com/seata/seata/pull/1761)] fix racle rollback failed when the table has null Blob Clob value
-- [[#1759](https://github.com/seata/seata/pull/1759)] fix saga service method not support interface type parameter
-- [[#1401](https://github.com/seata/seata/pull/1401)] fix rm channel register null resource
-- [[#1761](https://github.com/seata/seata/pull/1761)] fix oracle rollback failed when the table has null Blob Clob value
+- [[#1605](https://github.com/seata/seata/pull/1605)] 修复对象锁和全局锁可能造成的死锁和优化锁的粒度
+- [[#1685](https://github.com/seata/seata/pull/1685)] 修复db存储类异常被忽略的问题
+- [[#1691](https://github.com/seata/seata/pull/1691)] 修复 DruidDataSourceWrapper 反射问题
+- [[#1699](https://github.com/seata/seata/pull/1699)] 修复 mysql 和 oracle 中 'in' 和 'between' 在 where 条件的支持
+- [[#1713](https://github.com/seata/seata/pull/1713)] 修复 LockManagerTest.concurrentUseAbilityTest 中的测试条件
+- [[#1720](https://github.com/seata/seata/pull/1720)] 修复了不能获取 oracle tableMeta 问题
+- [[#1729](https://github.com/seata/seata/pull/1729)] 修复 oracle 的批量获取问题
+- [[#1735](https://github.com/seata/seata/pull/1735)] 修复当 TM commit 或 rollback 出现网络异常无法清除 xid 的问题
+- [[#1749](https://github.com/seata/seata/pull/1749)] 修复无法获取 oracle tableMeta cache 问题
+- [[#1751](https://github.com/seata/seata/pull/1751)] 修复文件存储模式下由于hash冲突导致的锁无法释放问题
+- [[#1761](https://github.com/seata/seata/pull/1761)] 修复 oracle 在回滚时 Blob 或 Clob null 值回滚失败问题
+- [[#1759](https://github.com/seata/seata/pull/1759)] 修复 saga 模式下 service method 不支持接口类型参数问题
+- [[#1401](https://github.com/seata/seata/pull/1401)] 修复 RM 启动时第一次注册 resource 为 null 的问题
 
 
 
 ### optimize： 
-- [[#1701](https://github.com/seata/seata/pull/1701)] remove unused imports
-- [[#1705](https://github.com/seata/seata/pull/1705)] Based on Java 5 optimization 
-- [[#1706](https://github.com/seata/seata/pull/1706)] inner class may be static
-- [[#1707](https://github.com/seata/seata/pull/1707)] default charset use StandardCharsets.UTF_8 
-- [[#1712](https://github.com/seata/seata/pull/1712)] abstract common undolog manager method
-- [[#1722](https://github.com/seata/seata/pull/1722)] simplify to make codes more readable
-- [[#1726](https://github.com/seata/seata/pull/1726)] formating log messages
-- [[#1738](https://github.com/seata/seata/pull/1738)] add some server's jvm parameters
-- [[#1743](https://github.com/seata/seata/pull/1743)] improve the efficiency of the batch log
-- [[#1747](https://github.com/seata/seata/pull/1747)] use raw types instead of boxing types
-- [[#1750](https://github.com/seata/seata/pull/1750)] abstract table meta cache
-- [[#1755](https://github.com/seata/seata/pull/1755)] test: enhance test coverage of seata common
-- [[#1756](https://github.com/seata/seata/pull/1756)] security: upgrade jackson to avoid security vulnerabilities
-- [[#1657](https://github.com/seata/seata/pull/1657)] eliminate the possibility of allocating too much direct memory
+- [[#1701](https://github.com/seata/seata/pull/1701)] 移除无用的imports
+- [[#1705](https://github.com/seata/seata/pull/1705)] 优化了一些基于 java5 的语法结构
+- [[#1706](https://github.com/seata/seata/pull/1706)] 将内部类声明为static
+- [[#1707](https://github.com/seata/seata/pull/1707)] 使用 StandardCharsets.UTF_8 代替 utf-8 编码
+- [[#1712](https://github.com/seata/seata/pull/1712)] 抽象 undologManager 的通用方法
+- [[#1722](https://github.com/seata/seata/pull/1722)] 简化代码提高代码的可读性
+- [[#1726](https://github.com/seata/seata/pull/1726)] 格式化日志输出
+- [[#1738](https://github.com/seata/seata/pull/1738)] 增加 seata-server jvm 参数
+- [[#1743](https://github.com/seata/seata/pull/1743)] 提高批量打印日志的性能
+- [[#1747](https://github.com/seata/seata/pull/1747)] 使用基本类型避免数据装箱
+- [[#1750](https://github.com/seata/seata/pull/1750)] 抽象 tableMetaCache 方法
+- [[#1755](https://github.com/seata/seata/pull/1755)] 提高 seata-common 模块的单测覆盖率
+- [[#1756](https://github.com/seata/seata/pull/1756)] 升级 jackson 版本防止潜在的安全漏洞
+- [[#1657](https://github.com/seata/seata/pull/1657)] 优化文件存储模式下文件rolling时占用较大direct buffer的问题
 
 
 
