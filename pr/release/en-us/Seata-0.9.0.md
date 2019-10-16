@@ -25,7 +25,7 @@ The version is updated as follows:
 - [[#1735](https://github.com/seata/seata/pull/1735)] clean xid when tm commit or rollback failed
 - [[#1749](https://github.com/seata/seata/pull/1749)] fix undo support oracle table meta cache
 - [[#1751](https://github.com/seata/seata/pull/1751)] fix memory lock is not released due to hash conflict
-- [[#1761](https://github.com/seata/seata/pull/1761)] fix racle rollback failed when the table has null Blob Clob value
+- [[#1761](https://github.com/seata/seata/pull/1761)] fix oracle rollback failed when the table has null Blob Clob value
 - [[#1759](https://github.com/seata/seata/pull/1759)] fix saga service method not support interface type parameter
 - [[#1401](https://github.com/seata/seata/pull/1401)] fix rm channel register null resource
 - [[#1761](https://github.com/seata/seata/pull/1761)] fix oracle rollback failed when the table has null Blob Clob value
