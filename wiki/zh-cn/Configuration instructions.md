@@ -5,8 +5,6 @@
 |---------------|--------------|----|
 | transport.serialization            | client和server通信编解码方式   |seata、protobuf |
 | transport.heartbeat            | client和server通信心跳检测开关   |默认true开启 |
-| service.max.commit.retry.timeout          | 二阶段提交重试超时时长 | 单位毫秒，默认-1表示无限重试。公式: timeout>=now-globalTransactionBeginTime,true表示超时则不再重试   |
-| service.max.rollback.retry.timeout         | 二阶段回滚重试超时时长 |  同commit  |
 
 
 ### server端
@@ -15,6 +13,8 @@
 |---------------|--------------|----|
 | transaction.undo.log.save.days            | undo保留天数   |默认7天 |
 | transaction.undo.log.delete.period          | undo清理线程间隔时间 |默认86400000，单位毫秒    |
+| service.max.commit.retry.timeout          | 二阶段提交重试超时时长 | 单位毫秒，默认-1表示无限重试。公式: timeout>=now-globalTransactionBeginTime,true表示超时则不再重试   |
+| service.max.rollback.retry.timeout         | 二阶段回滚重试超时时长 |  同commit  |
 | recovery.committing-retry-period         | 二阶段提交未完成状态全局事务重试提交线程间隔时间 |默认1000，单位毫秒    |
 | recovery.asyn-committing-retry-period         | 二阶段异步提交状态重试提交线程间隔时间 |默认1000，单位毫秒    |
 | recovery.rollbacking-retry-period         |二阶段回滚状态重试回滚线程间隔时间 |默认1000，单位毫秒    |
