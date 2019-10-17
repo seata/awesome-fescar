@@ -44,10 +44,10 @@
 | client.async.commit.buffer.limit    |  RM    | 异步提交缓存队列长度 | 默认10000。 二阶段提交成功，RM异步清理undo队列  |
 | client.lock.retry.internal    |  RM    | 校验或占用全局锁重试间隔(单位毫秒) |  默认10  |
 | client.lock.retry.times    |  RM    | 校验或占用全局锁重试次数 |  默认30  |
+| client.lock.retry.policy.branch-rollback-on-conflict    |  RM    | 分支事务与其它全局回滚事务冲突时锁策略 |  默认true，优先释放本地锁让回滚成功  |
 | client.report.retry.count    |  TM,RM    | 一阶段结果上报TC重试次数 |  默认5次  |
 | client.tm.commit.retry.count    |  TM    | 一阶段全局提交结果上报TC重试次数 |  默认1次，建议大于1  |
 | client.tm.rollback.retry.count    |  TM    | 一阶段全局回滚结果上报TC重试次数 |  默认1次，建议大于1  |
-| client.lock.retry.policy.branch-rollback-on-conflict    |  RM    | 分支事务与其它全局回滚事务冲突时锁策略 |  默认true，优先释放本地锁让回滚成功  |
 | transaction.undo.data.validation    |  RM    | 二阶段回滚镜像校验 |  默认true开启，false关闭 |
 | transaction.undo.log.serialization    |  RM    | undo序列化方式 |  默认jackson  |
 | transaction.undo.log.table    |  RM    | 自定义undo表名 |  默认undo_log  |
