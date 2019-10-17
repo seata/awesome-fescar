@@ -42,8 +42,8 @@
 | service.disableGlobalTransaction    |  TM,RM    | 全局事务开关 |  默认false。false为开启，true为关闭  |
 | service.enableDegrade    |  TM    | 降级开关 |  默认false。用途未知  |
 | client.async.commit.buffer.limit    |  RM    | 异步提交缓存队列长度 | 默认10000。 二阶段提交成功，RM异步清理undo队列  |
-| client.lock.retry.internal    |  RM    | 锁重试间隔(单位毫秒) |  默认10  |
-| client.lock.retry.times    |  RM    | 锁重试次数 |  默认30  |
+| client.lock.retry.internal    |  RM    | 校验或占用全局锁重试间隔(单位毫秒) |  默认10  |
+| client.lock.retry.times    |  RM    | 校验或占用全局锁重试次数 |  默认30  |
 | client.report.retry.count    |  TM,RM    | 一阶段结果上报TC重试次数 |  默认5次  |
 | client.tm.commit.retry.count    |  TM    | 一阶段全局提交结果上报TC重试次数 |  默认1次，建议大于1  |
 | client.tm.rollback.retry.count    |  TM    | 一阶段全局回滚结果上报TC重试次数 |  默认1次，建议大于1  |
