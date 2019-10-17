@@ -32,6 +32,10 @@
 | store.db.branch.table    |db模式分支事务表名 |默认branch_table    |
 | store.db.lock-table    |db模式全局锁表名 |默认lock_table    |
 | store.db.query-limit    |db模式查询全局事务一次的最大条数 |默认1000    |
+| metrics.enabled            |是否启用Metrics  |默认false关闭，在False状态下，所有与Metrics相关的组件将不会被初始化，使得性能损耗最低|
+| metrics.registry-type            |指标注册器类型    |Metrics使用的指标注册器类型，默认为内置的compact（简易）实现，这个实现中的Meter仅使用有限内存计数，性能高足够满足大多数场景；目前只能设置一个指标注册器实现 |
+| metrics.exporter-list            |指标结果Measurement数据输出器列表   |默认prometheus，多个输出器使用英文逗号分割，例如"prometheus,jmx"，目前仅实现了对接prometheus的输出器 |
+| metrics.exporter-prometheus-port            |prometheus输出器Client端口号   |默认9898 |
 
 ###client端
 
@@ -66,13 +70,4 @@ lock {
   remote {
     // store locks in the seata's server
   }
-}
-
-## metrics settings 未知
-metrics {
-  enabled = false
-  registry-type = "compact"
-  //multi exporters use comma divided
-  exporter-list = "prometheus"
-  exporter-prometheus-port = 9898
 }
