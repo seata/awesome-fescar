@@ -1,3 +1,4 @@
+# seata配置属性
 
 ###公共部分
 
@@ -58,16 +59,11 @@
 | support.spring.datasource.autoproxy    |  RM    | 数据源自动代理开关 |  默认false关闭  |
 
 
-##未使用
-lock {
-  // the lock store mode: local、remote
-  mode = "remote"
+###未使用
+| key         | desc         | remark|
+|---------------|--------------|----|
+| lock.mode            | 锁存储方式   |local、remote |
+| lock.local          |  |    |
+| lock.remote          |  |  |
 
-  local {
-    // store locks in user's database
-  }
-
-  remote {
-    // store locks in the seata's server
-  }
 }
