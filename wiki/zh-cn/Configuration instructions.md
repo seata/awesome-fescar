@@ -11,7 +11,7 @@
 
 | key         | desc         | remark|
 |---------------|--------------|----|
-| transaction.undo.log.save.days            | undo保留天数   |默认7天,log_status=1或未正常清理的undo |
+| transaction.undo.log.save.days            | undo保留天数   |默认7天,log_status=1和未正常清理的undo |
 | transaction.undo.log.delete.period          | undo清理线程间隔时间 |默认86400000，单位毫秒    |
 | service.max.commit.retry.timeout          | 二阶段提交重试超时时长 | 单位毫秒，默认-1表示无限重试。公式: timeout>=now-globalTransactionBeginTime,true表示超时则不再重试   |
 | service.max.rollback.retry.timeout         | 二阶段回滚重试超时时长 |  同commit  |
