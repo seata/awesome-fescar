@@ -44,7 +44,7 @@
 | service.vgroup_mapping.my_test_tx_group       |  TM,RM    | 事务群组   |my_test_tx_group为分组，配置项值为TC集群名 |
 | service.default.grouplist     |   TM,RM   | TC服务列表 |  仅注册中心为file时使用  |
 | service.disableGlobalTransaction    |  TM,RM    | 全局事务开关 |  默认false。false为开启，true为关闭  |
-| service.enableDegrade    |  TM    | 降级开关 |  默认false。用途未知  |
+| service.enableDegrade    |  TM    | 降级开关（待实现） |  默认false。业务侧根据连续错误数自动降级不走seata事务  |
 | client.async.commit.buffer.limit    |  RM    | 异步提交缓存队列长度 | 默认10000。 二阶段提交成功，RM异步清理undo队列  |
 | client.lock.retry.internal    |  RM    | 校验或占用全局锁重试间隔(单位毫秒) |  默认10  |
 | client.lock.retry.times    |  RM    | 校验或占用全局锁重试次数 |  默认30  |
