@@ -1,5 +1,5 @@
 # seata-awesome
-Old articles have been migrated to the official website of seata.io, distributed in docs, blogs, etc.
+Old articles have been migrated to the official website : seata.io, distributed in docs, blogs, etc.
 The role of this repository:
 1. Description and planning draft of Seata ecology
 2. Store slides of previous meetup,
