@@ -10,7 +10,7 @@ The version is updated as follows:
 - [[#1992](https://github.com/seata/seata/pull/1992)] support dynamic disable
 - [[#1898](https://github.com/seata/seata/pull/1898)] support dynamic config
 - [[#1983](https://github.com/seata/seata/pull/1983)] add hessian codec for rpc serialization
-- [[#1905](https://github.com/seata/seata/pull/1905)] solve the lock_key length problem(待定)
+- [[#1905](https://github.com/seata/seata/pull/1905)] solve the lock_key length problem
 - [[#1958](https://github.com/seata/seata/pull/1958)] transform desinger json to statemachine standard json
 - [[#1960](https://github.com/seata/seata/pull/1960)] Provide a visual graph designer for Seata Saga StateMachine based on GGEditor
 - [[#1900](https://github.com/seata/seata/pull/1900)] Saga state language support "Retry" service when error occurred
