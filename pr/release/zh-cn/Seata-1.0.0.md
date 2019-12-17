@@ -11,7 +11,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1992](https://github.com/seata/seata/pull/1992)] 支持动态降级
 - [[#1898](https://github.com/seata/seata/pull/1898)] 支持动态配置
 - [[#1983](https://github.com/seata/seata/pull/1983)] 支持hessian序列化
-- [[#1905](https://github.com/seata/seata/pull/1905)] feature: solve the lock_key length problem(待定)
+- [[#1905](https://github.com/seata/seata/pull/1905)] 解决lock_key长度问题
 - [[#1958](https://github.com/seata/seata/pull/1958)] 支持将设计器的JSON转换成状态机标准JSON
 - [[#1960](https://github.com/seata/seata/pull/1960)] 提供基于GGEditor的可视化图形Saga状态机设计器
 - [[#1900](https://github.com/seata/seata/pull/1900)] Saga状态语言支持重试服务
