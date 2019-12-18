@@ -25,6 +25,7 @@ The version is updated as follows:
 
 
 ### bugfix：
+- [[#2043](https://github.com/seata/seata/pull/2043)] fix startup failure when dynamic proxy is turned on and use druid-spring-boot-starter
 - [[#1668](https://github.com/seata/seata/pull/1668)] fix sql statement escape symbol
 - [[#2029](https://github.com/seata/seata/pull/2029)] fix seata-spring-boot-starter does not work
 - [[#2037](https://github.com/seata/seata/pull/2037)] fix mysql connection unable to release
@@ -74,6 +75,9 @@ The version is updated as follows:
 - [[#1777](https://github.com/seata/seata/pull/1777)] fix DeleteExecutor buildBeforeImageSQL keyword checker by db type
 
 ### optimize： 
+- [[#2000](https://github.com/seata/seata/pull/2000)] classify script to correspond directory
+- [[#2007](https://github.com/seata/seata/pull/2007)] enhance test coverage of seata common
+- [[#1969](https://github.com/seata/seata/pull/1969)] add ops script for Docker-Compose, Kubernetes and Helm
 - [[#1967](https://github.com/seata/seata/pull/1967)] Add Dockerfile
 - [[#2018](https://github.com/seata/seata/pull/2018)] optimize about ConfigFuture
 - [[#2020](https://github.com/seata/seata/pull/2020)] optimize saga log output
@@ -158,6 +162,7 @@ Thanks to these contributors for their code commits. Please report an unintended
 - [whjjay](https://github.com/whjjay)
 - [yangfuhai](https://github.com/yangfuhai)
 - [zhongfuhua](https://github.com/zhongfuhua)
+- [lizwmaster](https://github.com/lizwmaster)
 
 Also, we receive many valuable issues, questions and advices from our community. Thanks for you all.
 
