@@ -25,6 +25,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1710](https://github.com/seata/seata/pull/1710)] NamedThreadFactory增加计数器
 
 ### bugfix：
+- [[#2043](https://github.com/seata/seata/pull/2043)] 修复使用druid-spring-boot-starter动态代理失败
 - [[#1668](https://github.com/seata/seata/pull/1668)] 修复sql语句转义符号问题
 - [[#2029](https://github.com/seata/seata/pull/2029)] 修复seata-spring-boot-starter无效
 - [[#2037](https://github.com/seata/seata/pull/2037)] 修复mysql连接无法自动释放
@@ -76,6 +77,9 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 
 ### optimize： 
+- [[#2000](https://github.com/seata/seata/pull/2000)] 统一归类初始化脚本
+- [[#2007](https://github.com/seata/seata/pull/2007)] 提高common模块单元测试覆盖率
+- [[#1969](https://github.com/seata/seata/pull/1969)] 增加Docker-Compose, Kubernetes, Helm脚本
 - [[#1967](https://github.com/seata/seata/pull/1967)] 增加Docker file
 - [[#2018](https://github.com/seata/seata/pull/2018)] 优化ConfigFuture
 - [[#2020](https://github.com/seata/seata/pull/2020)] 优化saga日志输出
@@ -161,6 +165,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [whjjay](https://github.com/whjjay)
 - [yangfuhai](https://github.com/yangfuhai)
 - [zhongfuhua](https://github.com/zhongfuhua)
+- [lizwmaster](https://github.com/lizwmaster)
 
 同时，我们收到了社区反馈的很多有价值的issue和建议，非常感谢大家。
 
