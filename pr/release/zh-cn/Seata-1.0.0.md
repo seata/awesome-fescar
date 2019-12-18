@@ -21,7 +21,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1844](https://github.com/seata/seata/pull/1844)] Saga状态机支持异步执行
 - [[#1742](https://github.com/seata/seata/pull/1742)] 增加seata-spring-boot-starter
 - [[#1460](https://github.com/seata/seata/pull/1460)] 支持gzip压缩
-- [[#1492](https://github.com/seata/seata/pull/1492)] 支持gRpc序列化
+- [[#1492](https://github.com/seata/seata/pull/1492)] 支持grpc事务自动传递和绑定
 - [[#1710](https://github.com/seata/seata/pull/1710)] NamedThreadFactory增加计数器
 
 ### bugfix：
