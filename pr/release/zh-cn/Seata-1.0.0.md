@@ -23,8 +23,12 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1460](https://github.com/seata/seata/pull/1460)] 支持gzip压缩
 - [[#1492](https://github.com/seata/seata/pull/1492)] 支持grpc事务自动传递和绑定
 - [[#1710](https://github.com/seata/seata/pull/1710)] NamedThreadFactory增加计数器
+- [[#1997](https://github.com/seata/seata/pull/1997)] 提供图像生成工具便于查看Saga状态机执行路径
 
 ### bugfix：
+- [[#2050](https://github.com/seata/seata/pull/2050)] 修复监听不存在的配置导致空指针
+- [[#2053](https://github.com/seata/seata/pull/2053)] 修复Insert的表名为关键字,无法构建前置镜像
+- [[#2054](https://github.com/seata/seata/pull/2054)] 修复状态为Rollbacking的事务无法被检测出
 - [[#2043](https://github.com/seata/seata/pull/2043)] 修复使用druid-spring-boot-starter动态代理失败
 - [[#1668](https://github.com/seata/seata/pull/1668)] 修复sql语句转义符号问题
 - [[#2029](https://github.com/seata/seata/pull/2029)] 修复seata-spring-boot-starter无效
@@ -77,6 +81,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 
 ### optimize： 
+- [[#1775](https://github.com/seata/seata/pull/1775)] 优化分支事务回滚日志输出频率
 - [[#2000](https://github.com/seata/seata/pull/2000)] 统一归类初始化脚本
 - [[#2007](https://github.com/seata/seata/pull/2007)] 提高common模块单元测试覆盖率
 - [[#1969](https://github.com/seata/seata/pull/1969)] 增加Docker-Compose, Kubernetes, Helm脚本
