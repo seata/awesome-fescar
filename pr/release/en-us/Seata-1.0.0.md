@@ -7,6 +7,7 @@ Seata is an easy-to-use, high-performance, open source distributed transaction s
 The version is updated as follows:
 
 ### feature：
+- [[#1997](https://github.com/seata/seata/pull/1997)] provides a tool for generating graphics that show the state machine execution path
 - [[#1992](https://github.com/seata/seata/pull/1992)] support dynamic disable
 - [[#1898](https://github.com/seata/seata/pull/1898)] support dynamic config
 - [[#1983](https://github.com/seata/seata/pull/1983)] add hessian codec for rpc serialization
@@ -25,6 +26,9 @@ The version is updated as follows:
 
 
 ### bugfix：
+- [[#2050](https://github.com/seata/seata/pull/2050)] fix if add configListener but dataId not exist, it will throw NPE
+- [[#2053](https://github.com/seata/seata/pull/2053)] fix when tableName is keyword, the insert operation will get afterImage fail
+- [[#2054](https://github.com/seata/seata/pull/2054)] fix RetryRollbackingSessionManager lost Rollbacking
 - [[#2043](https://github.com/seata/seata/pull/2043)] fix startup failure when dynamic proxy is turned on and use druid-spring-boot-starter
 - [[#1668](https://github.com/seata/seata/pull/1668)] fix sql statement escape symbol
 - [[#2029](https://github.com/seata/seata/pull/2029)] fix seata-spring-boot-starter does not work
@@ -75,6 +79,7 @@ The version is updated as follows:
 - [[#1777](https://github.com/seata/seata/pull/1777)] fix DeleteExecutor buildBeforeImageSQL keyword checker by db type
 
 ### optimize： 
+- [[#1775](https://github.com/seata/seata/pull/1775)] optimize datasource manager branch rollback exception log
 - [[#2000](https://github.com/seata/seata/pull/2000)] classify script to correspond directory
 - [[#2007](https://github.com/seata/seata/pull/2007)] enhance test coverage of seata common
 - [[#1969](https://github.com/seata/seata/pull/1969)] add ops script for Docker-Compose, Kubernetes and Helm
