@@ -27,7 +27,6 @@ The version is updated as follows:
 - [[#1460](https://github.com/seata/seata/pull/1460)] support gzip compressor
 - [[#1492](https://github.com/seata/seata/pull/1492)] support gRpc
 
-
 ### bugfix：
 - [[#2066](https://github.com/seata/seata/pull/2066)] fix thread unsafe which missing double check when initial eureka client
 - [[#2059](https://github.com/seata/seata/pull/2059)] fix repeated rollback caused by asynchronous rollback thread
@@ -138,8 +137,6 @@ The version is updated as follows:
 - [[#1786](https://github.com/seata/seata/pull/1786)] simplify code
 - [[#1766](https://github.com/seata/seata/pull/1766)] remove unused method
 - [[#1770](https://github.com/seata/seata/pull/1770)] string splice and release lock
-
-
 
 Thanks to these contributors for their code commits. Please report an unintended omission.  
 - [slievrly](https://github.com/slievrly)
