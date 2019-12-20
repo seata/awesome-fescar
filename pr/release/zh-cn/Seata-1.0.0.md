@@ -6,9 +6,8 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 
 此版本更新如下：
 
-
 ### feature：
-- [[#1966](https://github.com/seata/seata/pull/1966)] 增加client端单体发送rpc方式
+- [[#1966](https://github.com/seata/seata/pull/1966)] 增加client端单条消息发送方式
 - [[#2004](https://github.com/seata/seata/pull/2004)] 增加配置中心配置同步脚本
 - [[#1997](https://github.com/seata/seata/pull/1997)] 提供图像生成工具便于查看Saga状态机执行路径
 - [[#1992](https://github.com/seata/seata/pull/1992)] 支持动态降级
