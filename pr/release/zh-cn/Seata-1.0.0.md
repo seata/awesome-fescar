@@ -22,7 +22,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1914](https://github.com/seata/seata/pull/1914)] 支持Oracle exists表达式
 - [[#1878](https://github.com/seata/seata/pull/1878)] 支持Mysql exists表达式
 - [[#1871](https://github.com/seata/seata/pull/1871)] 适配springcloud-alibaba-seata自动配置
-- [[#1844](https://github.com/seata/seata/pull/1844)] Saga状态机支持异步执行
+- [[#1844](https://github.com/seata/seata/pull/1844)] Saga状态机支持异步调用服务
 - [[#1742](https://github.com/seata/seata/pull/1742)] 增加seata-spring-boot-starter
 - [[#1460](https://github.com/seata/seata/pull/1460)] 支持gzip压缩
 - [[#1492](https://github.com/seata/seata/pull/1492)] 支持grpc事务自动传递和绑定
