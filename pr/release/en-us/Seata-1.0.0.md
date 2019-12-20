@@ -79,6 +79,7 @@ The version is updated as follows:
 - [[#1777](https://github.com/seata/seata/pull/1777)] fix DeleteExecutor buildBeforeImageSQL keyword checker by db type
 
 ### optimize： 
+- [[#2068](https://github.com/seata/seata/pull/2068)] optimize get database connection
 - [[#2056](https://github.com/seata/seata/pull/2056)] remove non-javadoc element 
 - [[#1775](https://github.com/seata/seata/pull/1775)] optimize datasource manager branch rollback exception log
 - [[#2000](https://github.com/seata/seata/pull/2000)] classify script to correspond directory
