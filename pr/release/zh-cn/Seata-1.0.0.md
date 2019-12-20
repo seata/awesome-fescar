@@ -13,11 +13,8 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1992](https://github.com/seata/seata/pull/1992)] 支持动态降级
 - [[#1898](https://github.com/seata/seata/pull/1898)] 支持动态配置
 - [[#1983](https://github.com/seata/seata/pull/1983)] 支持hessian序列化
-- [[#1905](https://github.com/seata/seata/pull/1905)] 解决lock_key长度问题
-- [[#1958](https://github.com/seata/seata/pull/1958)] 支持将设计器的JSON转换成状态机标准JSON
 - [[#1960](https://github.com/seata/seata/pull/1960)] 提供基于GGEditor的可视化图形Saga状态机设计器
 - [[#1900](https://github.com/seata/seata/pull/1900)] Saga状态语言支持重试服务
-- [[#1931](https://github.com/seata/seata/pull/1931)] nacos-config.py支持namespace
 - [[#1885](https://github.com/seata/seata/pull/1885)] 增加Docker image构建配置
 - [[#1914](https://github.com/seata/seata/pull/1914)] 支持Oracle exists表达式
 - [[#1878](https://github.com/seata/seata/pull/1878)] 支持Mysql exists表达式
@@ -96,8 +93,11 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1979](https://github.com/seata/seata/pull/1979)] 优化select for update识别器
 - [[#1957](https://github.com/seata/seata/pull/1957)] 获取关键字检查对象改为SPI的方法
 - [[#1956](https://github.com/seata/seata/pull/1956)] 找不到有效服务时,提示更加友好
+- [[#1958](https://github.com/seata/seata/pull/1958)] 支持将设计器的JSON转换成状态机标准JSON
+- [[#1905](https://github.com/seata/seata/pull/1905)] 解决lock_key长度问题
 - [[#1951](https://github.com/seata/seata/pull/1951)] 增加使用企业logo
 - [[#1950](https://github.com/seata/seata/pull/1950)] 优化异步提交时日志的缺失
+- [[#1931](https://github.com/seata/seata/pull/1931)] nacos-config.py支持namespace
 - [[#1938](https://github.com/seata/seata/pull/1938)] 优化批量插入和批量更新
 - [[#1930](https://github.com/seata/seata/pull/1930)] 减少HashMap初始化大小
 - [[#1919](https://github.com/seata/seata/pull/1919)] 强制代码风格检查
