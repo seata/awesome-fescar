@@ -79,6 +79,7 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1777](https://github.com/seata/seata/pull/1777)] 修复DeleteExecutor未根据数据库类型来构建前置镜像
 
 ### optimize： 
+- [[#2068](https://github.com/seata/seata/pull/2068)] 优化数据库连接获取
 - [[#2056](https://github.com/seata/seata/pull/2056)] 移除代码中非java doc注释
 - [[#1775](https://github.com/seata/seata/pull/1775)] 优化分支事务回滚日志输出频率
 - [[#2000](https://github.com/seata/seata/pull/2000)] 统一归类初始化脚本
