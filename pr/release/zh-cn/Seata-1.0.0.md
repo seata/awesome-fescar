@@ -117,12 +117,12 @@ Seata 是一款开源的分布式事务解决方案，提供高性能和简单�
 - [[#1842](https://github.com/seata/seata/pull/1842)] 增加部分初始化脚本
 - [[#1838](https://github.com/seata/seata/pull/1838)] 简化配置
 - [[#1866](https://github.com/seata/seata/pull/1866)] 优化TC日志输出
-- [[#1867](https://github.com/seata/seata/pull/1867)] 优化eata-spring-boot-starter
+- [[#1867](https://github.com/seata/seata/pull/1867)] 优化seata-spring-boot-starter
 - [[#1817](https://github.com/seata/seata/pull/1817)] 增加tm单元测试
 - [[#1823](https://github.com/seata/seata/pull/1823)] 减少db的访问次数
 - [[#1835](https://github.com/seata/seata/pull/1835)] Saga事务模版增加重新加载事务方法
 - [[#1861](https://github.com/seata/seata/pull/1861)] 优化当主键不存在时日志输出
-- [[#1836](https://github.com/seata/seata/pull/1836)] 修改IsPersist"属性类型为Boolean
+- [[#1836](https://github.com/seata/seata/pull/1836)] 修改IsPersist属性类型为Boolean
 - [[#1824](https://github.com/seata/seata/pull/1824)] 移除部分过期的Jvm11参数
 - [[#1820](https://github.com/seata/seata/pull/1820)] 修改部分代码风格
 - [[#1806](https://github.com/seata/seata/pull/1806)] 格式化错误日志
