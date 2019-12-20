@@ -7,6 +7,8 @@ Seata is an easy-to-use, high-performance, open source distributed transaction s
 The version is updated as follows:
 
 ### feature：
+- [[#1966](https://github.com/seata/seata/pull/1966)] add single send request for client
+- [[#2004](https://github.com/seata/seata/pull/2004)] add config center synchronization script
 - [[#1997](https://github.com/seata/seata/pull/1997)] provides a tool for generating graphics that show the state machine execution path
 - [[#1992](https://github.com/seata/seata/pull/1992)] support dynamic disable
 - [[#1898](https://github.com/seata/seata/pull/1898)] support dynamic config
@@ -17,15 +19,18 @@ The version is updated as follows:
 - [[#1900](https://github.com/seata/seata/pull/1900)] Saga state language support "Retry" service when error occurred
 - [[#1931](https://github.com/seata/seata/pull/1931)] nacos-config.py support namespace
 - [[#1885](https://github.com/seata/seata/pull/1885)] add configuration for build docker image in server module
+- [[#1914](https://github.com/seata/seata/pull/1914)] support where condition exists for Oracle
+- [[#1878](https://github.com/seata/seata/pull/1878)] support exists in where condition
 - [[#1871](https://github.com/seata/seata/pull/1871)] adapt springcloud-alibaba-seata autoconfig
 - [[#1844](https://github.com/seata/seata/pull/1844)] StateMachine ServiceTask supports asynchronous execution
 - [[#1742](https://github.com/seata/seata/pull/1742)] add seata-spring-boot-starter
 - [[#1460](https://github.com/seata/seata/pull/1460)] support gzip compressor
 - [[#1492](https://github.com/seata/seata/pull/1492)] support gRpc
-- [[#1710](https://github.com/seata/seata/pull/1710)] add prefix counter for NamedThreadFactory
 
 
 ### bugfix：
+- [[#2066](https://github.com/seata/seata/pull/2066)] fix thread unsafe which missing double check when initial eureka client
+- [[#2059](https://github.com/seata/seata/pull/2059)] fix repeated rollback caused by asynchronous rollback thread
 - [[#2050](https://github.com/seata/seata/pull/2050)] fix if add configListener but dataId not exist, it will throw NPE
 - [[#2053](https://github.com/seata/seata/pull/2053)] fix when tableName is keyword, the insert operation will get afterImage fail
 - [[#2054](https://github.com/seata/seata/pull/2054)] fix RetryRollbackingSessionManager lost Rollbacking
@@ -47,10 +52,7 @@ The version is updated as follows:
 - [[#1932](https://github.com/seata/seata/pull/1932)] fix issue of doesn't match environment when build docker image
 - [[#1912](https://github.com/seata/seata/pull/1912)] fix string.format() method formatting error
 - [[#1917](https://github.com/seata/seata/pull/1917)] fix NullPointerException in DB mock during CI
-- [[#1914](https://github.com/seata/seata/pull/1914)] support where condition exists for Oracle
-- [[#1878](https://github.com/seata/seata/pull/1878)] support exists in where condition
 - [[#1909](https://github.com/seata/seata/pull/1909)] fix xidInterceptorType is null
-- [[#1906](https://github.com/seata/seata/pull/1906)] add exception system exit code when rpcServer init.
 - [[#1902](https://github.com/seata/seata/pull/1902)] fix NPE in UndoExecutorFactory
 - [[#1789](https://github.com/seata/seata/pull/1789)] fix xid header lowercase
 - [[#1889](https://github.com/seata/seata/pull/1889)] fix register branch thread hang on tcc mode
@@ -72,6 +74,7 @@ The version is updated as follows:
 - [[#1796](https://github.com/seata/seata/pull/1796)] fix unexcepted exception can roll back
 - [[#1805](https://github.com/seata/seata/pull/1805)] fix connectionproxy prepareStatement not in global transaction
 - [[#1780](https://github.com/seata/seata/pull/1780)] fix can't use select for update in oracle
+- [[#1802](https://github.com/seata/seata/pull/1802)] changing HashMap to LinkedHashMap for deterministic iterations
 - [[#1793](https://github.com/seata/seata/pull/1793)] fix auto proxy for multiple-datasource does not work
 - [[#1788](https://github.com/seata/seata/pull/1788)] fix mysql can not get primary key value
 - [[#1764](https://github.com/seata/seata/pull/1764)] fix jdk 11 remoteAddress is null
@@ -79,6 +82,7 @@ The version is updated as follows:
 - [[#1777](https://github.com/seata/seata/pull/1777)] fix DeleteExecutor buildBeforeImageSQL keyword checker by db type
 
 ### optimize： 
+- [[#2056](https://github.com/seata/seata/pull/2056)] remove non-javadoc element 
 - [[#1775](https://github.com/seata/seata/pull/1775)] optimize datasource manager branch rollback exception log
 - [[#2000](https://github.com/seata/seata/pull/2000)] classify script to correspond directory
 - [[#2007](https://github.com/seata/seata/pull/2007)] enhance test coverage of seata common
@@ -104,6 +108,7 @@ The version is updated as follows:
 - [[#1907](https://github.com/seata/seata/pull/1907)] encapsulation determines the supported database type
 - [[#1903](https://github.com/seata/seata/pull/1903)] batch query branchSession by xid list
 - [[#1910](https://github.com/seata/seata/pull/1910)] all Override methods must be annotated with @override
+- [[#1906](https://github.com/seata/seata/pull/1906)] add exception system exit code when rpcServer init.
 - [[#1897](https://github.com/seata/seata/pull/1897)] remove clientTest it's not use
 - [[#1883](https://github.com/seata/seata/pull/1883)] restructure SQLRecognizer and UndoExecutor
 - [[#1890](https://github.com/seata/seata/pull/1890)] reformat saga module
@@ -125,14 +130,15 @@ The version is updated as follows:
 - [[#1815](https://github.com/seata/seata/pull/1815)] update codecov.yml
 - [[#1811](https://github.com/seata/seata/pull/1811)] adjust codecov configuration
 - [[#1799](https://github.com/seata/seata/pull/1799)] reduce unnecessary synchronized
-- [[#1802](https://github.com/seata/seata/pull/1802)] changing HashMap to LinkedHashMap for deterministic iterations
 - [[#1674](https://github.com/seata/seata/pull/1674)] increase rm code coverage by db mock
+- [[#1710](https://github.com/seata/seata/pull/1710)] add prefix counter for NamedThreadFactory
 - [[#1790](https://github.com/seata/seata/pull/1790)] format seata server register eureka instance id
 - [[#1760](https://github.com/seata/seata/pull/1760)] put message to logQueue
 - [[#1787](https://github.com/seata/seata/pull/1787)] make rpc remoting log easier to read
 - [[#1786](https://github.com/seata/seata/pull/1786)] simplify code
 - [[#1766](https://github.com/seata/seata/pull/1766)] remove unused method
 - [[#1770](https://github.com/seata/seata/pull/1770)] string splice and release lock
+
 
 
 Thanks to these contributors for their code commits. Please report an unintended omission.  
