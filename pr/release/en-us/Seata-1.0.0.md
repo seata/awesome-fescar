@@ -13,11 +13,8 @@ The version is updated as follows:
 - [[#1992](https://github.com/seata/seata/pull/1992)] support dynamic disable
 - [[#1898](https://github.com/seata/seata/pull/1898)] support dynamic config
 - [[#1983](https://github.com/seata/seata/pull/1983)] add hessian codec for rpc serialization
-- [[#1905](https://github.com/seata/seata/pull/1905)] solve the lock_key length problem
-- [[#1958](https://github.com/seata/seata/pull/1958)] transform desinger json to statemachine standard json
 - [[#1960](https://github.com/seata/seata/pull/1960)] Provide a visual graph designer for Seata Saga StateMachine based on GGEditor
 - [[#1900](https://github.com/seata/seata/pull/1900)] Saga state language support "Retry" service when error occurred
-- [[#1931](https://github.com/seata/seata/pull/1931)] nacos-config.py support namespace
 - [[#1885](https://github.com/seata/seata/pull/1885)] add configuration for build docker image in server module
 - [[#1914](https://github.com/seata/seata/pull/1914)] support where condition exists for Oracle
 - [[#1878](https://github.com/seata/seata/pull/1878)] support exists in where condition
@@ -45,6 +42,7 @@ The version is updated as follows:
 - [[#1978](https://github.com/seata/seata/pull/1978)] fix FileTransactionStoreManagerTest failed on wins OS
 - [[#1953](https://github.com/seata/seata/pull/1953)] fix get table meta failed with catalog
 - [[#1973](https://github.com/seata/seata/pull/1973)] fix error of get server port in container
+- [[#1905](https://github.com/seata/seata/pull/1905)] solve the lock_key length problem
 - [[#1927](https://github.com/seata/seata/pull/1927)] fix class with private access constructors should not be loaded by SPI.
 - [[#1961](https://github.com/seata/seata/pull/1961)] fix travis-ci exceeded the maximum log length
 - [[#1893](https://github.com/seata/seata/pull/1893)] fix saga dose not delete branches when transaction ended
@@ -81,6 +79,7 @@ The version is updated as follows:
 - [[#1777](https://github.com/seata/seata/pull/1777)] fix DeleteExecutor buildBeforeImageSQL keyword checker by db type
 
 ### optimize： 
+- [[#2068](https://github.com/seata/seata/pull/2068)] optimize get database connection
 - [[#2056](https://github.com/seata/seata/pull/2056)] remove non-javadoc element 
 - [[#1775](https://github.com/seata/seata/pull/1775)] optimize datasource manager branch rollback exception log
 - [[#2000](https://github.com/seata/seata/pull/2000)] classify script to correspond directory
@@ -96,8 +95,10 @@ The version is updated as follows:
 - [[#1979](https://github.com/seata/seata/pull/1979)] optimize get select for update recognizer
 - [[#1957](https://github.com/seata/seata/pull/1957)] load keywordChecker through SPI
 - [[#1956](https://github.com/seata/seata/pull/1956)] modify no available server error more clearly, and fixed NP
+- [[#1958](https://github.com/seata/seata/pull/1958)] transform desinger json to statemachine standard json
 - [[#1951](https://github.com/seata/seata/pull/1951)] add using organization logo
 - [[#1950](https://github.com/seata/seata/pull/1950)] leak of error trace while handleAsyncCommitting
+- [[#1931](https://github.com/seata/seata/pull/1931)] nacos-config.py support namespace
 - [[#1938](https://github.com/seata/seata/pull/1938)] optimize the speed when batch insert or batch update
 - [[#1930](https://github.com/seata/seata/pull/1930)] reduce HashMap initial size
 - [[#1919](https://github.com/seata/seata/pull/1919)] force check code style
