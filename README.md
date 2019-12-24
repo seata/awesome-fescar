@@ -1,6 +1,6 @@
 # seata-awesome
 
-Store slides of previous meetup,
+Store slides of previous meetup .
 
  
 Video playing address:
